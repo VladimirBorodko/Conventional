@@ -1,0 +1,23 @@
+PODS:
+  - Conventional (0.0.1)
+  - RxCocoa (4.0.0):
+    - RxSwift (~> 4.0)
+  - RxSwift (4.0.0)
+
+DEPENDENCIES:
+  - Conventional (from `../`)
+  - RxCocoa
+  - RxSwift
+
+EXTERNAL SOURCES:
+  Conventional:
+    :path: ../
+
+SPEC CHECKSUMS:
+  Conventional: 90bd767a7d40d1ac0a05db942b3efcf6f3cff341
+  RxCocoa: d62846ca96495d862fa4c59ea7d87e5031d7340e
+  RxSwift: fd680d75283beb5e2559486f3c0ff852f0d35334
+
+PODFILE CHECKSUM: c74b7bbe8cab3dca9c8c492f697693b4f71574b2
+
+COCOAPODS: 1.3.1

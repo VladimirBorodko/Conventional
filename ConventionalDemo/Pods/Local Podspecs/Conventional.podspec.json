@@ -1,0 +1,25 @@
+{
+  "name": "Conventional",
+  "version": "0.0.1",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE.md"
+  },
+  "homepage": "https://github.com/VladimirBorodko",
+  "authors": {
+    "Vladimir Borodko": "vladimirborodko@gmail.com"
+  },
+  "summary": "Library to reduce boilerplate and coupling",
+  "source": {
+    "path": "Sources/"
+  },
+  "module_name": "Conventional",
+  "platforms": {
+    "ios": "11.0"
+  },
+  "source_files": "Sources",
+  "frameworks": "SystemConfiguration",
+  "ios": {
+    "frameworks": "UIKit"
+  }
+}
