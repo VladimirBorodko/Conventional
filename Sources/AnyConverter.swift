@@ -12,18 +12,19 @@ public struct AnyConverter<Output> {
 
   fileprivate init
     ( mappers: [String: (Any)throws->Output]
-    )
-  { self.mappers = mappers }
+    ) {
+    self.mappers = mappers
+  }
 
   public func canConvert<Input>
     ( _ input: Input
-    ) -> Bool
-  { return mappers[String(reflecting: type(of: input as Any))] != nil }
+    ) -> Bool {
+    return mappers[String(reflecting: type(of: input as Any))] != nil
+  }
 
   public func convert<Input>
     ( _ input: Input
-    ) throws -> Output
-  {
+    ) throws -> Output {
     let input = try (input as? OpaqueWrapper).map{try $0.unwrapValue()} ?? input
     let inputType = type(of: input as Any)
     guard let map = mappers[String(reflecting: inputType)] else {throw NotRegistered(type: inputType)}
@@ -40,8 +41,7 @@ public struct AnyConverter<Output> {
     public func append<Input>
       ( _: Input.Type
       , convert: @escaping (Input)throws->Output
-      ) throws -> Builder
-    {
+      ) throws -> Builder {
       let key = String(reflecting: Input.self)
       guard mappers[key] == nil else {throw NotUnique(type: Input.self)}
       mappers[key] = {
@@ -52,7 +52,15 @@ public struct AnyConverter<Output> {
     }
   }
 
-  public struct NotRegistered: Error { let type: Any.Type }
-  public struct NotUnique: Error { let type: Any.Type }
-  public struct TypeMismatch: Error { let type: Any.Type }
+  public struct NotRegistered: Error {
+    let type: Any.Type
+  }
+
+  public struct NotUnique: Error {
+    let type: Any.Type
+  }
+  
+  public struct TypeMismatch: Error {
+    let type: Any.Type
+  }
 }

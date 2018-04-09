@@ -9,15 +9,14 @@ import UIKit
 
 public final class TableViewCompound {
 
-  let cells: [String: Brief.Config]
-  let headers: [String: Brief.Config]
-  let footers: [String: Brief.Config]
+  let cells: [String: ReuseableBrief.Config]
+  let headers: [String: ReuseableBrief.Config]
+  let footers: [String: ReuseableBrief.Config]
   weak var tableView: UITableView?
 
   init
     ( _ builder: ReuseableComposer<UITableView>
-    ) throws
-  {
+    ) throws {
     self.tableView = builder.view
     try builder.cells.registerUniqueReuseIds(builder.view.registerCell(brief:))
     cells = try builder.cells.uniqueModelContexts()
@@ -30,8 +29,7 @@ public final class TableViewCompound {
     ( from tv: UITableView
     , at ip: IndexPath
     , for context: Any
-    ) -> UITableViewCell
-  {
+    ) -> UITableViewCell {
     do {
       let contextType = type(of: context)
       guard tv === tableView else { throw WrongViewInstance(view: tv) }
@@ -48,8 +46,7 @@ public final class TableViewCompound {
     ( from tv: UITableView
     , at ip: IndexPath
     , for context: Any
-    ) throws -> UITableViewHeaderFooterView?
-  {
+    ) throws -> UITableViewHeaderFooterView? {
     do {
       let contextType = type(of: context)
       guard tv === tableView else {throw WrongViewInstance(view: tv)}
@@ -66,8 +63,7 @@ public final class TableViewCompound {
     ( from tv: UITableView
     , at ip: IndexPath
     , for context: Any
-    ) throws -> UITableViewHeaderFooterView?
-  {
+    ) throws -> UITableViewHeaderFooterView? {
     do {
       let contextType = type(of: context)
       guard tv === tableView else {throw WrongViewInstance(view: tv)}
@@ -83,7 +79,9 @@ public final class TableViewCompound {
 
 private extension UITableView {
 
-  func registerCell(brief: Brief) throws {
+  func registerCell
+    ( brief: ReuseableBrief
+    ) throws {
     switch brief.source {
     case let .aClass(aClass):
       try objc_throws { self.register(aClass, forCellReuseIdentifier: brief.reuseId) }
@@ -96,7 +94,9 @@ private extension UITableView {
     }
   }
 
-  func registerView(brief: Brief) throws {
+  func registerView
+    ( brief: ReuseableBrief
+    ) throws {
     switch brief.source {
     case let .aClass(aClass):
       try objc_throws { self.register(aClass, forHeaderFooterViewReuseIdentifier: brief.reuseId) }

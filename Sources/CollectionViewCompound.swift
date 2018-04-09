@@ -9,14 +9,13 @@ import UIKit
 
 public final class CollectionViewCompound {
 
-  let cells: [String: Brief.Config]
-  let supplementaries: [String: [String: Brief.Config]]
+  let cells: [String: ReuseableBrief.Config]
+  let supplementaries: [String: [String: ReuseableBrief.Config]]
   weak var collectionView: UICollectionView?
 
   init
     ( _ builder: ReuseableComposer<UICollectionView>
-    ) throws
-  {
+    ) throws {
     self.collectionView = builder.view
     try builder.cells.registerUniqueReuseIds(builder.view.registerCell(brief:))
     cells = try builder.cells.uniqueModelContexts()
@@ -30,8 +29,7 @@ public final class CollectionViewCompound {
     ( from cv: UICollectionView
     , at ip: IndexPath
     , for context: Any
-    ) -> UICollectionViewCell
-  {
+    ) -> UICollectionViewCell {
     do {
       let contextType = type(of: context)
       guard cv === collectionView else { throw WrongViewInstance(view: cv) }
@@ -46,15 +44,15 @@ public final class CollectionViewCompound {
 
   public func hasHeader
     ( for context: Any
-    ) -> Bool
-  { return supplementaries[UICollectionElementKindSectionHeader]?[String(reflecting: type(of: context))] != nil }
+    ) -> Bool {
+    return supplementaries[UICollectionElementKindSectionHeader]?[String(reflecting: type(of: context))] != nil
+  }
 
   public func header
     ( from cv: UICollectionView
     , at ip: IndexPath
     , for context: Any
-    ) throws -> UICollectionReusableView
-  {
+    ) throws -> UICollectionReusableView {
     do {
       let contextType = type(of: context)
       guard cv === collectionView else {throw WrongViewInstance(view: cv)}
@@ -73,15 +71,15 @@ public final class CollectionViewCompound {
 
   public func hasFooter
     ( for context: Any
-    ) -> Bool
-  { return supplementaries[UICollectionElementKindSectionFooter]?[String(reflecting: type(of: context))] != nil }
+    ) -> Bool {
+    return supplementaries[UICollectionElementKindSectionFooter]?[String(reflecting: type(of: context))] != nil
+  }
 
   public func footer
     ( from cv: UICollectionView
     , at ip: IndexPath
     , for context: Any
-    ) throws -> UICollectionReusableView
-  {
+    ) throws -> UICollectionReusableView {
     do {
       let contextType = type(of: context)
       guard cv === collectionView else {throw WrongViewInstance(view: cv)}
@@ -103,8 +101,7 @@ public final class CollectionViewCompound {
     , of kind: String
     , at ip: IndexPath
     , for context: Any
-    ) throws -> UICollectionReusableView
-  {
+    ) throws -> UICollectionReusableView {
     do {
       let contextType = type(of: context)
       guard cv === collectionView else {throw WrongViewInstance(view: cv)}
@@ -124,7 +121,9 @@ public final class CollectionViewCompound {
 
 private extension UICollectionView {
 
-  func registerCell(brief: Brief) throws {
+  func registerCell
+    ( brief: ReuseableBrief
+    ) throws {
     switch brief.source {
     case let .aClass(aClass):
       try objc_throws { self.register(aClass, forCellWithReuseIdentifier: brief.reuseId) }
@@ -137,7 +136,10 @@ private extension UICollectionView {
     }
   }
 
-  func registerView(kind: String, brief: Brief) throws {
+  func registerView
+    ( kind: String
+    , brief: ReuseableBrief
+    ) throws {
     switch brief.source {
     case let .aClass(aClass):
       try objc_throws { self.register(aClass, forSupplementaryViewOfKind: kind, withReuseIdentifier: brief.reuseId) }

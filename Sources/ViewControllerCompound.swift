@@ -15,8 +15,17 @@ public class ViewControllerCompound {
 
   init() { }
 
-  func perform(_ transition: Transition) { }
-  func prepare(for segue: UIStoryboardSegue, sender: Any?) { }
+  func perform
+    ( _ transition: Transition
+    ) {
+  }
+
+  func prepare
+    ( for segue: UIStoryboardSegue
+    , sender: Any?
+    ) {
+  }
+  
   var converter: AnyConverter<Transition> {
     return AnyConverter<Transition>.Builder.init().build()
   }

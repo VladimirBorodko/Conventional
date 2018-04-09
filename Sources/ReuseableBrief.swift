@@ -1,5 +1,5 @@
 //
-//  Brief.swift
+//  ReuseableBrief.swift
 //  Conventional
 //
 //  Created by Vladimir Borodko on 03/04/2018.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Brief {
+struct ReuseableBrief {
 
   let reuseId: String
   let source: Source
@@ -30,12 +30,11 @@ struct Brief {
   }
 }
 
-extension Array where Element == Brief {
+extension Array where Element == ReuseableBrief {
 
   func registerUniqueReuseIds
-    ( _ register: (Brief) throws -> Void
-    ) throws
-  {
+    ( _ register: (ReuseableBrief) throws -> Void
+    ) throws {
     _ = try self.reduce(into: [String:Void]()) { dict, brief in
       // If you need many model to one view relation try to register same view with different reuse identifiers
       guard dict[brief.reuseId] == nil else { throw NotUniqueReuseId(id: brief.reuseId) }
@@ -44,8 +43,7 @@ extension Array where Element == Brief {
     }
   }
 
-  func uniqueModelContexts() throws -> [String: Brief.Config]
-  {
+  func uniqueModelContexts() throws -> [String: ReuseableBrief.Config] {
     return try self.reduce(into: [:]) { dict, brief in
       let key = String(reflecting: brief.modelType)
       guard dict[key] == nil else { throw NotUniqueModel(type: brief.modelType) }

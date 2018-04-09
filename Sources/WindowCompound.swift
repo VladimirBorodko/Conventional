@@ -11,8 +11,11 @@ public class WindowCompound {
 
   init() { }
 
-  func perform(_ transition: Transition) { }
-  func prepare(for segue: UIStoryboardSegue, sender: Any?) { }
+  func perform
+    ( _ transition: Transition
+    ) {
+  }
+
   var converter: AnyConverter<Transition> {
     return AnyConverter<Transition>.Builder.init().build()
   }
