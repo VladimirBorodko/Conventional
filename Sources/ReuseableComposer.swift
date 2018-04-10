@@ -30,12 +30,15 @@ public final class ReuseableComposer<T> {
   
   public struct Registrator<View: UIView> {
 
-    let factory: Factory
+    let brief: ReuseableBrief
+    let composer: ReuseableComposer
 
     public func byClass
       ( with reuseId: String = View.conventional.reuseIdentifier
       ) -> Configurator<View> {
-      return .init(reuseId: reuseId, source: .aClass(View.self), factory: factory)
+      brief.reuseId = reuseId
+      brief.source = .aClass(View.self)
+      return .init(brief: brief, composer: composer)
     }
 
     public func fromNib
@@ -43,7 +46,9 @@ public final class ReuseableComposer<T> {
       , bundle: Bundle = View.conventional.bundle
       , with reuseId: String = View.conventional.reuseIdentifier
       ) -> Configurator<View> {
-      return .init(reuseId: reuseId, source: .assetNib(name, bundle), factory: factory)
+      brief.reuseId = reuseId
+      brief.source = .assetNib(name, bundle)
+      return .init(brief: brief, composer: composer)
     }
 
     public func fromNib
@@ -51,58 +56,64 @@ public final class ReuseableComposer<T> {
       , bundle: Bundle = View.conventional.bundle
       , with reuseId: String = View.conventional.reuseIdentifier
       ) -> Configurator<View> {
-      return .init(reuseId: reuseId, source: .dataNib(data, bundle), factory: factory)
+      brief.reuseId = reuseId
+      brief.source = .dataNib(data, bundle)
+      return .init(brief: brief, composer: composer)
     }
 
     public func inStoryboard
       ( with reuseId: String = View.conventional.reuseIdentifier
       ) -> Configurator<View> {
-      return .init(reuseId: reuseId, source: .storyboard, factory: factory)
+      brief.reuseId = reuseId
+      brief.source = .storyboard
+      return .init(brief: brief, composer: composer)
     }
   }
 
   public struct Configurator<View: UIView> {
 
-    let reuseId: String
-    let source: ReuseableBrief.Source
-    let factory: Factory
+    let brief: ReuseableBrief
+    let composer: ReuseableComposer
 
     public func configure<Model, Owner: AnyObject>
       ( with _: Model.Type
       , owner: Owner
       , by closure: @escaping (Owner) -> (View, Model) -> Void
       ) -> ReuseableComposer {
-      let brief = ReuseableBrief(reuseId: reuseId, source: source, viewType: View.self, modelType: Model.self) { [weak owner] view, model in
+      brief.contextType = Model.self
+      brief.configure = { [weak owner] view, model in
         guard let owner = owner else { throw OwnerDeallocated<View>(configuratorType: Owner.self) }
         guard let view = view as? View else { throw ViewTypeMismatch<View>(modelType: Model.self) }
         guard let model = model as? Model else { throw ModelTypeMismatch<View>(modelType: Model.self) }
         closure(owner)(view,model)
       }
-      return factory(brief)
+      return composer
     }
 
     public func configure<Model>
       ( with _: Model.Type
       , by closure: @escaping (View, Model) -> Void
       ) -> ReuseableComposer {
-      let brief = ReuseableBrief(reuseId: reuseId, source: source, viewType: View.self, modelType: Model.self) { view, model in
+      brief.contextType = Model.self
+      brief.configure = { view, model in
         guard let view = view as? View else { throw ViewTypeMismatch<View>(modelType: Model.self) }
         guard let model = model as? Model else { throw ModelTypeMismatch<View>(modelType: Model.self) }
         closure(view,model)
       }
-      return factory(brief)
+      return composer
     }
 
     public func configure<Model>
       ( with _: Model.Type
       , by closure: @escaping (View) -> (Model) -> Void
       ) -> ReuseableComposer {
-      let brief = ReuseableBrief(reuseId: reuseId, source: source, viewType: View.self, modelType: Model.self) { view, model in
+      brief.contextType = Model.self
+      brief.configure = { view, model in
         guard let view = view as? View else { throw ViewTypeMismatch<View>(modelType: Model.self) }
         guard let model = model as? Model else { throw ModelTypeMismatch<View>(modelType: Model.self) }
         closure(view)(model)
       }
-      return factory(brief)
+      return composer
     }
   }
 }
@@ -112,38 +123,34 @@ public extension ReuseableComposer where T == UICollectionView {
   func cell<View: UICollectionViewCell>
     ( _: View.Type
     ) -> ReuseableComposer.Registrator<View> {
-    return .init { brief in
-      self.cells.append(brief)
-      return self
-    }
+    let brief = ReuseableBrief(viewType: View.self)
+    cells.append(brief)
+    return .init(brief: brief, composer: self)
   }
 
   func header<View: UICollectionReusableView>
     ( _: View.Type
     ) -> ReuseableComposer.Registrator<View> {
-    return .init { brief in
-      self.supplementaries[UICollectionElementKindSectionHeader] = self.headers + [brief]
-      return self
-    }
+    let brief = ReuseableBrief(viewType: View.self)
+    supplementaries[UICollectionElementKindSectionHeader] = headers + [brief]
+    return .init(brief: brief, composer: self)
   }
 
   func footer<View: UICollectionReusableView>
     ( _: View.Type
     ) -> ReuseableComposer.Registrator<View> {
-    return .init { brief in
-      self.supplementaries[UICollectionElementKindSectionFooter] = self.footers + [brief]
-      return self
-    }
+    let brief = ReuseableBrief(viewType: View.self)
+    supplementaries[UICollectionElementKindSectionFooter] = footers + [brief]
+    return .init(brief: brief, composer: self)
   }
 
   func supplementary<View: UICollectionReusableView>
     ( _: View.Type
     , of kind: String
     ) -> ReuseableComposer.Registrator<View> {
-    return .init { brief in
-      self.supplementaries[kind] = (self.supplementaries[kind] ?? []) + [brief]
-      return self
-    }
+    let brief = ReuseableBrief(viewType: View.self)
+    supplementaries[kind] = (supplementaries[kind] ?? []) + [brief]
+    return .init(brief: brief, composer: self)
   }
 
   func build() -> CollectionViewCompound {
@@ -160,28 +167,25 @@ public extension ReuseableComposer where T == UITableView {
   func cell<View: UITableViewCell>
     ( _: View.Type
     ) -> ReuseableComposer.Registrator<View> {
-    return .init { brief in
-      self.cells.append(brief)
-      return self
-    }
+    let brief = ReuseableBrief(viewType: View.self)
+    cells.append(brief)
+    return .init(brief: brief, composer: self)
   }
 
   func header<View: UITableViewHeaderFooterView>
     ( _: View.Type
     ) -> ReuseableComposer.Registrator<View> {
-    return .init { brief in
-      self.supplementaries[UICollectionElementKindSectionHeader] = self.headers + [brief]
-      return self
-    }
+    let brief = ReuseableBrief(viewType: View.self)
+    supplementaries[UICollectionElementKindSectionHeader] = headers + [brief]
+    return .init(brief: brief, composer: self)
   }
 
   func footer<View: UITableViewHeaderFooterView>
     ( _: View.Type
     ) -> ReuseableComposer.Registrator<View> {
-    return .init { brief in
-      self.supplementaries[UICollectionElementKindSectionFooter] = self.footers + [brief]
-      return self
-    }
+    let brief = ReuseableBrief(viewType: View.self)
+    supplementaries[UICollectionElementKindSectionFooter] = footers + [brief]
+    return .init(brief: brief, composer: self)
   }
 
   func build() -> TableViewCompound {

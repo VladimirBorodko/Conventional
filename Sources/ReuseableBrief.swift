@@ -7,13 +7,19 @@
 
 import Foundation
 
-struct ReuseableBrief {
+class ReuseableBrief {
 
-  let reuseId: String
-  let source: Source
+  var reuseId: String!
+  var source: Source!
   let viewType: AnyClass
-  let modelType: Any.Type
-  let configure: Configure
+  var contextType: Any.Type!
+  var configure: Configure!
+
+  init
+    ( viewType: AnyClass
+    ) {
+    self.viewType = viewType
+  }
 
   typealias Configure = ( _ view: Any, _ model: Any) throws -> Void
 
@@ -45,8 +51,8 @@ extension Array where Element == ReuseableBrief {
 
   func uniqueModelContexts() throws -> [String: ReuseableBrief.Config] {
     return try self.reduce(into: [:]) { dict, brief in
-      let key = String(reflecting: brief.modelType)
-      guard dict[key] == nil else { throw NotUniqueModel(type: brief.modelType) }
+      let key = String(reflecting: brief.contextType)
+      guard dict[key] == nil else { throw NotUniqueModel(type: brief.contextType) }
       dict[key] = .init(reuseId: brief.reuseId, configure: brief.configure)
     }
   }

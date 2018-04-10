@@ -21,14 +21,14 @@ public protocol Convention {
   static var nibName: String { get }
   static var bundle: Bundle { get }
   static var reuseIdentifier: String { get }
-  static var extractFromSegue: (UIStoryboardSegue) throws -> Complying { get }
   static var extractInstantiated: (UIViewController) throws -> Complying { get }
+  static var extractFromSegue: (UIStoryboardSegue) throws -> Complying { get }
 }
 
 public extension Convention {
 
   static var storyboardSegueIdentifier: String { return "To\(String(describing: Complying.self))" }
-  static var embedSegueIdentifier: String { return "" }
+  static var embedSegueIdentifier: String { return "Embed\(String(describing: Complying.self))" }
   static var exclusiveStoryboardName: String { return String(describing: Complying.self) }
   static var collectiveStoryboardName: String { return "Main" }
   static var collectiveStoryboardIdentifier: String { return String(describing: Complying.self) }
@@ -39,8 +39,9 @@ public extension Convention {
     return { instantiated in
       if let complying = instantiated as? Complying { return complying }
       if let navigationController = instantiated as? UINavigationController
-        , let complying = navigationController.viewControllers.first as? Complying
-      { return complying }
+        , let complying = navigationController.viewControllers.first as? Complying {
+        return complying
+      }
       throw ExtractFailed(type: Complying.self)
     }
   }

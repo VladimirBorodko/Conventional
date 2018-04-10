@@ -82,7 +82,7 @@ private extension UITableView {
   func registerCell
     ( brief: ReuseableBrief
     ) throws {
-    switch brief.source {
+    switch brief.source! {
     case let .aClass(aClass):
       try objc_throws { self.register(aClass, forCellReuseIdentifier: brief.reuseId) }
     case let .assetNib(name,bundle):
@@ -97,7 +97,7 @@ private extension UITableView {
   func registerView
     ( brief: ReuseableBrief
     ) throws {
-    switch brief.source {
+    switch brief.source! {
     case let .aClass(aClass):
       try objc_throws { self.register(aClass, forHeaderFooterViewReuseIdentifier: brief.reuseId) }
     case let .assetNib(name,bundle):

@@ -124,7 +124,7 @@ private extension UICollectionView {
   func registerCell
     ( brief: ReuseableBrief
     ) throws {
-    switch brief.source {
+    switch brief.source! {
     case let .aClass(aClass):
       try objc_throws { self.register(aClass, forCellWithReuseIdentifier: brief.reuseId) }
     case let .assetNib(name,bundle):
@@ -140,7 +140,7 @@ private extension UICollectionView {
     ( kind: String
     , brief: ReuseableBrief
     ) throws {
-    switch brief.source {
+    switch brief.source! {
     case let .aClass(aClass):
       try objc_throws { self.register(aClass, forSupplementaryViewOfKind: kind, withReuseIdentifier: brief.reuseId) }
     case let .assetNib(name,bundle):

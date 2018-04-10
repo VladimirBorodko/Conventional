@@ -38,11 +38,11 @@ extension UIView: ConventionComplying { }
 extension UIViewController: ConventionComplying { }
 
 public extension Conventional where Complying: UIViewController {
-  var composer: TransitionComposer<Complying> { return .init() }
+  var composer: TransitionComposer<Complying> { return .init(complying) }
 }
 
 public extension Conventional where Complying: UIWindow {
-  var composer: TransitionComposer<Complying> { return .init() }
+  var composer: TransitionComposer<Complying> { return .init(complying) }
 }
 
 public extension Conventional where Complying: UICollectionView {
