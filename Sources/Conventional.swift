@@ -23,12 +23,12 @@ public protocol ConventionComplying {
   var conventional: Conventional<Complying> { get set }
 }
 
-public extension ConventionComplying where Self: AnyObject {
-  static var conventional: Conventional<Self>.Type {
+extension ConventionComplying where Self: AnyObject {
+  public static var conventional: Conventional<Self>.Type {
     get { return Conventional<Self>.self }
     set { }
   }
-  var conventional: Conventional<Self> {
+  public var conventional: Conventional<Self> {
     get { return Conventional(self) }
     set { }
   }
@@ -37,18 +37,18 @@ public extension ConventionComplying where Self: AnyObject {
 extension UIView: ConventionComplying { }
 extension UIViewController: ConventionComplying { }
 
-public extension Conventional where Complying: UIViewController {
-  var composer: TransitionComposer<Complying> { return .init(complying) }
+extension Conventional where Complying: UIViewController {
+  public var stock: TransitionComposer<Complying> { return .init(complying) }
 }
 
-public extension Conventional where Complying: UIWindow {
-  var composer: TransitionComposer<Complying> { return .init(complying) }
+extension Conventional where Complying: UIWindow {
+  public var stock: TransitionComposer<Complying> { return .init(complying) }
 }
 
-public extension Conventional where Complying: UICollectionView {
-  var composer: ReuseableComposer<Complying> { return .init(complying) }
+extension Conventional where Complying: UICollectionView {
+  public var stock: Reuseable.Builder<UICollectionView> { return .init(complying) }
 }
 
-public extension Conventional where Complying: UITableView {
-  var composer: ReuseableComposer<Complying> { return .init(complying) }
+extension Conventional where Complying: UITableView {
+  public var stock: Reuseable.Builder<Complying> { return .init(complying) }
 }

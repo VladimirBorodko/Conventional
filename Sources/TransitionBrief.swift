@@ -8,12 +8,18 @@
 import UIKit
 
 class TransitionBrief {
-  var contextType: Any.Type!
-  var configure: Configure!
-  var provide: Provide!
-  var perform: Perform!
+  internal var contextType: Any.Type!
+  internal var configure: Configure!
+  internal var transit: Transit!
+  internal var extract: Extract!
 
-  typealias Perform = (_ source: AnyObject, _ destination: UIViewController) throws -> Void
-  typealias Provide = () throws -> UIViewController
-  typealias Configure = (_ source: AnyObject,  _ context: Any) throws -> Void
+  internal enum TransitType {
+    case storyboard(String, (UIViewController)throws->Void)
+  }
+
+  internal typealias Transit = () throws -> Void
+  internal typealias Provide = () throws -> UIViewController
+  internal typealias Configure = (_ source: AnyObject,  _ context: Any) throws -> Void
+  internal typealias Extract = (_ destination: UIViewController) throws -> UIViewController
+  internal typealias Perform = (UIStoryboardSegue) throws -> Void
 }

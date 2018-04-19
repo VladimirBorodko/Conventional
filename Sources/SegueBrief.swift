@@ -7,42 +7,41 @@
 
 import UIKit
 
-class SegueBrief {
-  var segueId: String!
-  var senderType: Any.Type!
-  var configure: Configure!
-  var extract: Extract!
+internal class SegueBrief {
+  internal var segueId: String!
+  internal var destinayionType: AnyClass!
+  internal var configure: Configure!
+  internal var extract: Extract!
 
-  typealias Extract = (UIStoryboardSegue) throws -> AnyObject
+  internal typealias Extract = (UIStoryboardSegue) throws -> UIViewController
+  internal typealias Configure = (_ target: UIViewController, _ sender: Any) throws -> Void
+  internal typealias Perform = (_ segue: UIStoryboardSegue,  _ sender: Any) throws -> Void
 
-  typealias Configure = (_ segue: UIStoryboardSegue,  _ sender: Any) throws -> Void
+  internal struct Key: Hashable {
+    internal let id: String
+    internal let destination: String
 
-  struct Key: Hashable {
-    let id: String
-    let sender: String
+    internal var hashValue: Int {return id.hashValue ^ destination.hashValue}
 
-    var hashValue: Int { return id.hashValue ^ sender.hashValue }
-
-    static func ==
+    internal static func ==
       (lhs: Key
       , rhs: Key
       ) -> Bool {
-      return lhs.id == rhs.id && lhs.sender == rhs.sender
+      return lhs.id == rhs.id && lhs.destination == rhs.destination
     }
 
-    init
+    internal init
       ( _ brief: SegueBrief
       ) {
       self.id = brief.segueId
-      self.sender = String(reflecting: brief.senderType)
+      self.destination = String(reflecting: brief.destinayionType!)
     }
 
-    init
+    internal init
       ( _ segue: UIStoryboardSegue
-      , _ sender: Any
       ) {
       self.id = segue.identifier ?? ""
-      self.sender = String(reflecting: type(of: sender))
+      self.destination = String(reflecting: type(of: segue.destination))
     }
   }
 }

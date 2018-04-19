@@ -1,5 +1,5 @@
 //
-//  TableViewCompound.swift
+//  TableViewStock.swift
 //  Conventional
 //
 //  Created by Vladimir Borodko on 31/03/2018.
@@ -7,25 +7,25 @@
 
 import UIKit
 
-public final class TableViewCompound {
+public final class TableViewStock {
 
-  let cells: [String: ReuseableBrief.Config]
-  let headers: [String: ReuseableBrief.Config]
-  let footers: [String: ReuseableBrief.Config]
-  weak var tableView: UITableView?
+  internal let cells: [String: Reuseable.Brief]
+  internal let headers: [String: Reuseable.Brief]
+  internal let footers: [String: Reuseable.Brief]
+  internal weak var tableView: UITableView?
 
-  init
-    ( _ builder: ReuseableComposer<UITableView>
+  internal init
+    ( _ builder: Reuseable.Builder<UITableView>
     ) throws {
     self.tableView = builder.view
-    try builder.cells.registerUniqueReuseIds(builder.view.registerCell(brief:))
+    try builder.cells.registerUniqueReuseIds(builder.view.registerCell(chapter:))
     cells = try builder.cells.uniqueModelContexts()
-    try builder.supplementaries.values.reduce(into: [], +=).registerUniqueReuseIds(builder.view.registerView(brief:))
+    try builder.supplementaries.values.reduce(into: [], +=).registerUniqueReuseIds(builder.view.registerView(chapter:))
     headers = try builder.headers.uniqueModelContexts()
     footers = try builder.footers.uniqueModelContexts()
   }
 
-  func cell
+  public func cell
     ( from tv: UITableView
     , at ip: IndexPath
     , for context: Any
@@ -77,35 +77,3 @@ public final class TableViewCompound {
   }
 }
 
-private extension UITableView {
-
-  func registerCell
-    ( brief: ReuseableBrief
-    ) throws {
-    switch brief.source! {
-    case let .aClass(aClass):
-      try objc_throws { self.register(aClass, forCellReuseIdentifier: brief.reuseId) }
-    case let .assetNib(name,bundle):
-      try objc_throws { self.register(UINib(nibName: name, bundle: bundle), forCellReuseIdentifier: brief.reuseId) }
-    case let .dataNib(data, bundle):
-      try objc_throws { self.register(UINib(data: data, bundle: bundle), forCellReuseIdentifier: brief.reuseId) }
-    case .storyboard:
-      break
-    }
-  }
-
-  func registerView
-    ( brief: ReuseableBrief
-    ) throws {
-    switch brief.source! {
-    case let .aClass(aClass):
-      try objc_throws { self.register(aClass, forHeaderFooterViewReuseIdentifier: brief.reuseId) }
-    case let .assetNib(name,bundle):
-      try objc_throws { self.register(UINib(nibName: name, bundle: bundle), forHeaderFooterViewReuseIdentifier: brief.reuseId) }
-    case let .dataNib(data, bundle):
-      try objc_throws { self.register(UINib(data: data, bundle: bundle), forHeaderFooterViewReuseIdentifier: brief.reuseId) }
-    case .storyboard:
-      break
-    }
-  }
-}

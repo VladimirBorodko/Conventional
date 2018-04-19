@@ -7,16 +7,16 @@
 
 import UIKit
 
-public class WindowCompound {
+public class WindowStock {
 
   public let converter: AnyConverter<Transition> = {
     return AnyConverter<Transition>.Builder.init().build()
   }()
-  weak var source: UIWindow?
+  internal weak var source: UIWindow?
 
-  init() { }
+  internal init() { }
 
-  func perform
+  public func perform
     ( _ transition: Transition
     ) {
     do {

@@ -9,25 +9,34 @@ import UIKit
 
 public class TransitionComposer<Source> {
 
-  let source: Source
-  var segues: [SegueBrief] = []
-  var transitions: [TransitionBrief] = []
-  var mocks: [Any.Type] = []
+  internal let source: Source
+  internal var segues: [SegueBrief] = []
+  internal var transitions: [TransitionBrief] = []
+  internal var mocks: [Any.Type] = []
 
-  public func registerMock<Model>
+  public func mock<Model>
     ( for _: Model.Type
     ) -> TransitionComposer {
     mocks.append(Model.self)
     return self
   }
 
-  public func register<Controller: UIViewController>
-    ( _: Controller.Type
-    ) -> Destination<Controller> {
+  public func register<Target: UIViewController>
+    ( _: Target.Type
+    ) -> Destination<Target> {
     return .init(composer: self)
   }
 
-  init
+  public func register<Target: UIViewController, Container: UIViewController>
+    ( _: Target.Type
+    , containedIn _: Container.Type
+    , extract: (Container)->Target?
+    ) -> Destination<Target> {
+    return .init(composer: self)
+  }
+
+
+  internal init
     ( _ source: Source
     ) {
     self.source = source
@@ -35,93 +44,79 @@ public class TransitionComposer<Source> {
 
   public struct Destination<Controller: UIViewController> {
 
-    let composer: TransitionComposer
+    internal let composer: TransitionComposer
 
-    func storyboardSegue<Sender: AnyObject>
-      ( by _: Sender.Type
-      , segueId: String = Controller.conventional.storyboardSegueIdentifier
-      , extract: @escaping (UIStoryboardSegue) throws -> Controller = Controller.conventional.extractFromSegue
-      ) -> SegueConfig<Controller, Sender> {
-      let brief = SegueBrief()
-      brief.segueId = segueId
-      brief.senderType = Sender.self
-      brief.extract = {try extract($0)}
-      composer.segues.append(brief)
-      return .init(brief: brief, composer: composer)
-    }
 
-    func embedSegue
-      ( segueId: String = Controller.conventional.embedSegueIdentifier
-      , extract: @escaping (UIStoryboardSegue) throws -> Controller = Controller.conventional.extractFromSegue
-      ) -> SegueConfig<Controller, Source> {
-      let brief = SegueBrief()
-      brief.segueId = segueId
-      brief.senderType = Source.self
-      brief.extract = {try extract($0)}
-      composer.segues.append(brief)
-      return .init(brief: brief, composer: composer)
-    }
-
-    func manualSegue
-      ( id: String = Controller.conventional.storyboardSegueIdentifier
-      , extract: (UIStoryboardSegue) throws -> Controller = Controller.conventional.extractFromSegue
-      ) -> Configurator<Controller> {
-      let brief = TransitionBrief()
-      composer.transitions.append(brief)
-      return .init(brief: brief, composer: composer)
-    }
-
-    func instantiateInitial
+    public func instantiateInitial
       ( from storyboardName: String = Controller.conventional.exclusiveStoryboardName
       , in bundle: Bundle = Controller.conventional.bundle
-      , extract: (UIViewController) throws -> Controller = Controller.conventional.extractInstantiated
+      , extract: @escaping (UIViewController) throws -> Controller = Controller.conventional.extract
       ) -> Transit<Controller> {
       let brief = TransitionBrief()
       composer.transitions.append(brief)
-      return .init(brief: brief, composer: composer)
+      let provide: TransitionBrief.Provide = {
+        let controller = try objc_throws {
+          UIStoryboard(name: storyboardName, bundle: bundle).instantiateInitialViewController()
+        }
+        guard let unwrapped = controller else {throw Temp.error}
+        return try extract(unwrapped)
+      }
+      return .init(provide: provide, brief: brief, composer: composer)
     }
 
 
-    func instantiate
+    public func instantiate
       ( from storyboardName: String = Controller.conventional.collectiveStoryboardName
       , in bundle: Bundle = Controller.conventional.bundle
       , by id: String = Controller.conventional.collectiveStoryboardIdentifier
-      , extract: (UIViewController) throws -> Controller = Controller.conventional.extractInstantiated
+      , extract: @escaping (UIViewController) throws -> Controller = Controller.conventional.extract
       ) -> Transit<Controller> {
       let brief = TransitionBrief()
       composer.transitions.append(brief)
-      return .init(brief: brief, composer: composer)
+      let provide: TransitionBrief.Provide = {
+        let controller = try objc_throws {
+          UIStoryboard(name: storyboardName, bundle: bundle).instantiateViewController(withIdentifier: id)
+        }
+        return try extract(controller)
+      }
+      return .init(provide: provide, brief: brief, composer: composer)
     }
 
-    func create
-      ( with factory: () throws -> Controller
+    public func create
+      ( with factory: @escaping () throws -> Controller
       ) -> Transit<Controller> {
       let brief = TransitionBrief()
       composer.transitions.append(brief)
-      return .init(brief: brief, composer: composer)
+      return .init(provide: factory, brief: brief, composer: composer)
     }
   }
 
-  public struct SegueConfig<Controller,Sender> {
+  public struct SegueConfig<Controller> {
 
-    let brief: SegueBrief
-    let composer: TransitionComposer
+    internal let brief: SegueBrief
+    internal let composer: TransitionComposer
 
     public func configure
-      ( by closure: @escaping (Source) -> (Controller, Sender) -> Void
+      ( by closure: @escaping (Source) -> (Controller, _ sender: Any) -> Void
       ) -> TransitionComposer {
       return composer
     }
 
     public func configure
-      ( by closure: @escaping (Source, Controller, Sender) -> Void
+      ( by closure: @escaping (Source, Controller, _ sender: Any) -> Void
       ) -> TransitionComposer {
       return composer
     }
 
     public func configure<Router>
       ( router: Router
-      , by closure: @escaping (Router) -> (Source, Controller, Sender) -> Void
+      , by closure: @escaping (Router) -> (Source, Controller, _ sender: Any) -> Void
+      ) -> TransitionComposer {
+      return composer
+    }
+    public func configure<Router>
+      ( router: Router
+      , by closure: @escaping (Router) -> (Controller) -> Void
       ) -> TransitionComposer {
       return composer
     }
@@ -129,15 +124,16 @@ public class TransitionComposer<Source> {
 
   public struct Transit<Controller: UIViewController> {
 
-    let brief: TransitionBrief
-    let composer: TransitionComposer
+    internal let provide: TransitionBrief.Provide
+    internal let brief: TransitionBrief
+    internal let composer: TransitionComposer
 
   }
 
   public struct Configurator<Controller: UIViewController> {
 
-    let brief: TransitionBrief
-    let composer: TransitionComposer
+    internal let brief: TransitionBrief
+    internal let composer: TransitionComposer
 
     public func configure<Model>
       ( with _: Model.Type
@@ -170,32 +166,88 @@ public class TransitionComposer<Source> {
   }
 }
 
-public extension TransitionComposer.Transit where Source: UIViewController {
-  func push() -> TransitionComposer.Configurator<Controller> {
+extension TransitionComposer.Destination where Source: UIViewController {
+
+  public func storyboardSegue
+    ( with id: String = Controller.conventional.storyboardSegueIdentifier
+    ) -> TransitionComposer.SegueConfig<Controller> {
+    let brief = SegueBrief()
+    brief.segueId = id
+    brief.destinayionType = Controller.self
+    brief.extract = { segue in
+      guard let destination = segue.destination as? Controller else {
+        throw ExtractFailed(type: Controller.self)
+      }
+      return destination
+    }
+    composer.segues.append(brief)
     return .init(brief: brief, composer: composer)
   }
 
-  func show() -> TransitionComposer.Configurator<Controller> {
+  public func storyboardSegue<Container: UIViewController>
+    ( with id: String = Controller.conventional.storyboardSegueIdentifier
+    , container type: Container.Type
+    , extract: @escaping (Container) throws -> Controller = Controller.conventional.extract
+    ) -> TransitionComposer.SegueConfig<Controller> {
+    let brief = SegueBrief()
+    brief.segueId = id
+    brief.destinayionType = Container.self
+    brief.extract = { segue in
+      guard let destination = segue.destination as? Container else {
+        throw ExtractFailed(type: Container.self)
+      }
+      return try extract(destination)
+    }
+    composer.segues.append(brief)
     return .init(brief: brief, composer: composer)
   }
 
-  func present() -> TransitionComposer.Configurator<Controller> {
+  public func manualSegue
+    ( id: String = Controller.conventional.storyboardSegueIdentifier
+    ) -> TransitionComposer.Configurator<Controller> {
+    let brief = TransitionBrief()
+    composer.transitions.append(brief)
     return .init(brief: brief, composer: composer)
   }
 
-  func custom() -> TransitionComposer.Configurator<Controller> {
+  public func manualSegue<Container: UIViewController>
+    ( id: String = Controller.conventional.storyboardSegueIdentifier
+    , container _: Container.Type
+    , extract: @escaping (Container) throws -> Controller = Controller.conventional.extract
+    ) -> TransitionComposer.Configurator<Controller> {
+    let brief = TransitionBrief()
+    composer.transitions.append(brief)
     return .init(brief: brief, composer: composer)
   }
 }
 
-public extension TransitionComposer.Transit where Source: UIWindow {
-  func setAsRoot() -> TransitionComposer.Configurator<Controller> {
+extension TransitionComposer.Transit where Source: UIViewController {
+
+  public func push() -> TransitionComposer.Configurator<Controller> {
+    return .init(brief: brief, composer: composer)
+  }
+
+  public func show() -> TransitionComposer.Configurator<Controller> {
+    return .init(brief: brief, composer: composer)
+  }
+
+  public func present() -> TransitionComposer.Configurator<Controller> {
+    return .init(brief: brief, composer: composer)
+  }
+
+  public func custom() -> TransitionComposer.Configurator<Controller> {
     return .init(brief: brief, composer: composer)
   }
 }
 
-public extension TransitionComposer.Transit where Source: UINavigationController {
-  func setAsRoot() -> TransitionComposer.Configurator<Controller> {
+extension TransitionComposer.Transit where Source: UIWindow {
+  public func setAsRoot() -> TransitionComposer.Configurator<Controller> {
+    return .init(brief: brief, composer: composer)
+  }
+}
+
+extension TransitionComposer.Transit where Source: UINavigationController {
+  public func setAsRoot() -> TransitionComposer.Configurator<Controller> {
     return .init(brief: brief, composer: composer)
   }
 }
