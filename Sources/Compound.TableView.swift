@@ -8,6 +8,7 @@
 import UIKit
 
 extension Compound.TableView {
+  
   public func cell
     ( from tv: UITableView
     , at ip: IndexPath

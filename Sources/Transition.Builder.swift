@@ -41,3 +41,25 @@ extension Transition.Builder {
     })
   }
 }
+
+extension Transition.Builder where Built: UIViewController {
+
+  public func build() -> Compound.ViewController {
+    do {
+      return try .init(self)
+    } catch let e {
+      fatalError("\(e)")
+    }
+  }
+}
+
+extension Transition.Builder where Built: UIWindow {
+  
+  public func build() -> Compound.Window {
+    do {
+      return try .init(self)
+    } catch let e {
+      fatalError("\(e)")
+    }
+  }
+}

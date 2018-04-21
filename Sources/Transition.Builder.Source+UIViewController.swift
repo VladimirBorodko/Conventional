@@ -7,29 +7,42 @@
 
 import UIKit
 
-extension Transition.Builder.Source where Built: UIViewController {
+extension Transition.Builder.Source where Built: UIViewController, Container: UIViewController {
 
   public func storyboardSegue
     ( with id: String = Target.conventional.storyboardSegueIdentifier
     ) -> Transition.Builder<Built>.Source<Target, UIStoryboardSegue>.Configurator {
-    //    let brief = SegueBrief()
-    //    brief.segueId = id
-    //    brief.destinayionType = Controller.self
-    //    brief.extract = { segue in
-    //      guard let destination = segue.destination as? Controller else {
-    //        throw ExtractFailed(type: Controller.self)
-    //      }
-    //      return destination
-    //    }
-    //    composer.segues.append(brief)
-    return .init()
+    return .init(built: builder.built) { _, configure in
+      var builder = self.builder
+      let extract = self.extract
+      let chapter = Transition.SegueChapter(destinationType: Container.self, segueId: id) { segue, sender in
+        guard let segue = segue as? UIStoryboardSegue else { throw Temp.error }
+        let target = try extract(segue.destination)
+        try configure(target, sender)
+      }
+      builder.segues.append(chapter)
+      return builder
+    }
   }
 
   public func manualSegue
     ( id: String = Target.conventional.storyboardSegueIdentifier
     ) -> Transition.Builder<Built>.Source<Target, Container>.Configurator {
-    //    let brief = TransitionBrief()
-    //    composer.transitions.append(brief)
-    return .init()
+    return .init(built: builder.built) { contextType, configure in
+      var builder = self.builder
+      let extract = self.extract
+      let chapter = Transition.ControllerChapter(contextType: contextType) { controller, context in
+        guard let controller = controller as? Built else { throw Temp.error }
+        let sender = Transition.Sender { segue in
+          let target = try extract(segue.destination)
+          try configure(target, context)
+        }
+        try objc_throws {
+          controller.performSegue(withIdentifier: id, sender: sender)
+        }
+      }
+      builder.controllers.append(chapter)
+      return builder
+    }
   }
 }

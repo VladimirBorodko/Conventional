@@ -12,27 +12,44 @@ extension Transition.Builder.Source.Configurator where Container == UIStoryboard
   public func configure
     ( by closure: @escaping (Built) -> (Target, _ sender: Any) -> Void
     ) -> Transition.Builder<Built> {
-    return Transition.Builder<Built>?(nilLiteral: ())!
+    return apply(Any.self) { [weak built = self.built] target, sender in
+      guard let built = built else { throw Temp.error }
+      guard let target = target as? Target else { throw Temp.error }
+      closure(built)(target, sender)
+    }
   }
 
   public func configure
     ( by closure: @escaping (Built, Target, _ sender: Any) -> Void
     ) -> Transition.Builder<Built> {
-    return Transition.Builder<Built>?(nilLiteral: ())!
+    return apply(Any.self) { [weak built = self.built] target, sender in
+      guard let built = built else { throw Temp.error }
+      guard let target = target as? Target else { throw Temp.error }
+      closure(built, target, sender)
+    }
   }
 
-  public func configure<Router>
-    ( router: Router
-    , by closure: @escaping (Router) -> (Built, Target, _ sender: Any) -> Void
+  public func configure<Router: AnyObject>
+    ( by router: Router
+    , with closure: @escaping (Router) -> (Built, Target, _ sender: Any) -> Void
     ) -> Transition.Builder<Built> {
-    return Transition.Builder<Built>?(nilLiteral: ())!
+    return apply(Any.self) { [weak router, weak built = self.built] target, sender in
+      guard let router = router else { throw Temp.error }
+      guard let built = built else { throw Temp.error }
+      guard let target = target as? Target else { throw Temp.error }
+      closure(router)(built, target, sender)
+    }
   }
   
-  public func configure<Router>
-    ( router: Router
-    , by closure: @escaping (Router) -> (Target) -> Void
+  public func configure<Router: AnyObject>
+    ( by router: Router
+    , with closure: @escaping (Router) -> (Target) -> Void
     ) -> Transition.Builder<Built> {
-    return Transition.Builder<Built>?(nilLiteral: ())!
+    return apply(Any.self) { [weak router] target, sender in
+      guard let router = router else { throw Temp.error }
+      guard let target = target as? Target else { throw Temp.error }
+      closure(router)(target)
+    }
   }
 
 }

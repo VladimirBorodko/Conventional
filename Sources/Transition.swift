@@ -13,7 +13,12 @@ public struct Transition {
 
   internal typealias Configure = ( _ view: AnyObject, _ context: Any) throws -> Void
 
-  public struct Builder<Built> {
+  internal struct Sender {
+    internal let send: Send
+    internal typealias Send = (UIStoryboardSegue) throws -> Void
+  }
+
+  public struct Builder<Built: AnyObject> {
 
     internal let built: Built
     internal var mocks: [MockChapter] = []
@@ -25,14 +30,21 @@ public struct Transition {
       internal let builder: Builder
       internal let extract: Extract
 
-      typealias Extract = (UIViewController) throws -> Target
+      internal typealias Extract = (UIViewController) throws -> Target
 
       public struct Transit {
 
+        internal let source: Source
+        internal let factory: Factory
+
+        public typealias Factory = () throws -> Container
       }
 
       public struct Configurator {
+        internal let built: Built
+        internal let apply: Apply
 
+        internal typealias Apply = (_ contextType: Any.Type, _ configure: @escaping Configure) -> Builder
       }
     }
   }
@@ -81,5 +93,6 @@ public struct Transition {
   internal struct ControllerChapter {
     
     internal let contextType: Any.Type
+    internal let configure: Configure
   }
 }

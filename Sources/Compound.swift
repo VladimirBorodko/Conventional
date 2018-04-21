@@ -47,18 +47,22 @@ public enum Compound {
   }
 
   public class ViewController {
+
     internal weak var source: UIViewController?
-    internal init
-      ( _ builder: Transition.Builder<UIViewController>
+    
+    internal init<VC: UIViewController>
+      ( _ builder: Transition.Builder<VC>
       ) throws {
       source = builder.built
     }
   }
 
   public class Window {
+
     internal weak var source: UIWindow?
-    internal init
-      ( _ builder: Transition.Builder<UIWindow>
+
+    internal init<W: UIWindow>
+      ( _ builder: Transition.Builder<W>
       ) throws {
       source = builder.built
     }

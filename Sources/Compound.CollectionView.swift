@@ -8,6 +8,7 @@
 import UIKit
 
 extension Compound.CollectionView {
+  
   public func cell
     ( from cv: UICollectionView
     , at ip: IndexPath
