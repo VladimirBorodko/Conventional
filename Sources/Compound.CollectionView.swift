@@ -13,7 +13,7 @@ extension Compound.CollectionView {
     ( from cv: UICollectionView
     , at ip: IndexPath
     , for context: Any
-    ) -> UICollectionViewCell {
+    ) throws -> UICollectionViewCell {
     do {
       let contextType = type(of: context)
       guard cv === collectionView else { throw WrongViewInstance(view: cv) }
@@ -22,7 +22,8 @@ extension Compound.CollectionView {
       try configurator.configure(cell, context)
       return cell
     } catch let e {
-      preconditionFailure("\(e)")
+      assertionFailure("\(e)")
+      throw e
     }
   }
 
@@ -49,7 +50,8 @@ extension Compound.CollectionView {
       try config.configure(view, context)
       return view
     } catch let e {
-      preconditionFailure("\(e)")
+      assertionFailure("\(e)")
+      throw e
     }
   }
 
@@ -76,7 +78,8 @@ extension Compound.CollectionView {
       try config.configure(view, context)
       return view
     } catch let e {
-      preconditionFailure("\(e)")
+      assertionFailure("\(e)")
+      throw e
     }
   }
 
@@ -98,7 +101,8 @@ extension Compound.CollectionView {
       try config.configure(view, context)
       return view
     } catch let e {
-      preconditionFailure("\(e)")
+      assertionFailure("\(e)")
+      throw e
     }
   }
 }

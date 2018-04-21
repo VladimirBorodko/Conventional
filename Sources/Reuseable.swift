@@ -42,9 +42,9 @@ public enum Reuseable {
     }
 
     public struct Registrator<View: UIView> {
-      internal let add: Add
+      internal let apply: Apply
 
-      internal typealias Add = (Chapter) -> Builder
+      internal typealias Apply = (Chapter) -> Builder
 
       public struct Configurator {
         internal let registrator: Registrator

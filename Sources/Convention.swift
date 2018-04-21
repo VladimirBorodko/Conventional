@@ -13,7 +13,7 @@ public protocol Convention {
   associatedtype Complying: AnyObject
 
   static var storyboardSegueIdentifier: String { get }
-  static var embedSegueIdentifier: String { get }
+  static var embeddSegueIdentifier: String { get }
   static var exclusiveStoryboardName: String { get }
   static var collectiveStoryboardName: String { get }
   static var collectiveStoryboardIdentifier: String { get }
@@ -26,7 +26,7 @@ public protocol Convention {
 extension Convention {
 
   public static var storyboardSegueIdentifier: String { return "To\(String(describing: Complying.self))" }
-  public static var embedSegueIdentifier: String { return "Embed\(String(describing: Complying.self))" }
+  public static var embeddSegueIdentifier: String { return "" }
   public static var exclusiveStoryboardName: String { return String(describing: Complying.self) }
   public static var collectiveStoryboardName: String { return "Main" }
   public static var collectiveStoryboardIdentifier: String { return String(describing: Complying.self) }

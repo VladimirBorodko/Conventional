@@ -7,6 +7,10 @@
 
 import UIKit
 
+extension Transition.Builder.Source.Transit where Built: UIViewController {
+
+}
+
 extension Transition.Builder.Source.Transit where Built: UIWindow {
 
 }

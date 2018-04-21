@@ -13,7 +13,7 @@ extension Compound.TableView {
     ( from tv: UITableView
     , at ip: IndexPath
     , for context: Any
-    ) -> UITableViewCell {
+    ) throws -> UITableViewCell {
     do {
       let contextType = type(of: context)
       guard tv === tableView else { throw WrongViewInstance(view: tv) }
@@ -22,7 +22,8 @@ extension Compound.TableView {
       try configurator.configure(cell, context)
       return cell
     } catch let e {
-      preconditionFailure("\(e)")
+      assertionFailure("\(e)")
+      throw e
     }
   }
 
@@ -39,7 +40,8 @@ extension Compound.TableView {
       try view.map { try config.configure($0, context) }
       return view
     } catch let e {
-      preconditionFailure("\(e)")
+      assertionFailure("\(e)")
+      throw e
     }
   }
 
@@ -56,7 +58,8 @@ extension Compound.TableView {
       try view.map { try config.configure($0, context) }
       return view
     } catch let e {
-      preconditionFailure("\(e)")
+      assertionFailure("\(e)")
+      throw e
     }
   }
 }
