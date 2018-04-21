@@ -8,17 +8,18 @@
 import UIKit
 
 extension Transition.Builder {
-  public func mock<Model>
-    ( for _: Model.Type
+  
+  public func mock<Context>
+    ( for _: Context.Type
     ) -> Transition.Builder<Built> {
     var builder = self
-    builder.mocks.append(.init(contextType: Model.self))
+    builder.mocks.append(.init(contextType: Context.self))
     return builder
   }
 
   public func register<Target: UIViewController>
     ( _: Target.Type
-    ) -> Transition.Builder<Built>.Destination<Target, Target> {
+    ) -> Transition.Builder<Built>.Source<Target, Target> {
     return .init(builder: self, extract: {
       guard let target = $0 as? Target else {
         throw Temp.error
@@ -31,7 +32,7 @@ extension Transition.Builder {
     ( _: Target.Type
     , containedIn _: Container.Type
     , extract: @escaping (Container) throws -> Target = Target.conventional.extract
-    ) -> Transition.Builder<Built>.Destination<Target, Container> {
+    ) -> Transition.Builder<Built>.Source<Target, Container> {
     return .init(builder: self, extract: {
       guard let containder = $0 as? Container else {
         throw Temp.error

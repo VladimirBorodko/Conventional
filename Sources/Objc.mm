@@ -14,6 +14,7 @@
 #include <iostream>
 
 @implementation Objc
+
 + (BOOL)performOrThrow:(void(^)())tryBlock error:(__autoreleasing NSError **)error {
   try {
     @try { tryBlock(); return YES; }
@@ -37,4 +38,5 @@
     return NO;
   }
 }
+
 @end

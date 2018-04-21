@@ -19,11 +19,13 @@ public enum Reuseable {
   }
 
   public struct Brief {
+
     internal let reuseId: String
     internal let configure: Configure
   }
 
   public struct Builder<T> {
+
     internal let view: T
     internal var cells: [Chapter] = []
     internal var supplementaries: [String: [Chapter]] = [:]
@@ -42,11 +44,13 @@ public enum Reuseable {
     }
 
     public struct Registrator<View: UIView> {
+
       internal let add: Add
 
       internal typealias Add = (Chapter) -> Builder
 
       public struct Configurator {
+
         internal let registrator: Registrator
         internal let source: Source
         internal let reuseId: String
@@ -55,6 +59,7 @@ public enum Reuseable {
   }
 
   struct Chapter {
+    
     internal let viewType: AnyClass
     internal let source: Source
     internal let reuseId: String

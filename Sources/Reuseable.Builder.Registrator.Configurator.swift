@@ -15,9 +15,9 @@ extension Reuseable.Builder.Registrator.Configurator {
     , by closure: @escaping (Owner) -> (View, Context) -> Void
     ) -> Reuseable.Builder<T> {
     let chapter = Reuseable.Chapter(configurator: self, contextType: Context.self) { [weak owner] view, context in
-      guard let owner = owner else { throw OwnerDeallocated<View>(configuratorType: Owner.self) }
-      guard let view = view as? View else { throw ViewTypeMismatch<View>(modelType: Context.self) }
-      guard let context = context as? Context else { throw ModelTypeMismatch<View>(modelType: Context.self) }
+      guard let owner = owner else { throw Temp.error }
+      guard let view = view as? View else { throw Temp.error }
+      guard let context = context as? Context else { throw Temp.error }
       closure(owner)(view,context)
     }
     return registrator.add(chapter)
@@ -28,8 +28,8 @@ extension Reuseable.Builder.Registrator.Configurator {
     , by closure: @escaping (View, Context) -> Void
     ) -> Reuseable.Builder<T> {
     let chapter = Reuseable.Chapter(configurator: self, contextType: Context.self) { view, context in
-      guard let view = view as? View else { throw ViewTypeMismatch<View>(modelType: Context.self) }
-      guard let context = context as? Context else { throw ModelTypeMismatch<View>(modelType: Context.self) }
+      guard let view = view as? View else { throw Temp.error }
+      guard let context = context as? Context else { throw Temp.error }
       closure(view,context)
     }
     return registrator.add(chapter)
@@ -40,8 +40,8 @@ extension Reuseable.Builder.Registrator.Configurator {
     , by closure: @escaping (View) -> (Context) -> Void
     ) -> Reuseable.Builder<T> {
     let chapter = Reuseable.Chapter(configurator: self, contextType: Context.self) { view, context in
-      guard let view = view as? View else { throw ViewTypeMismatch<View>(modelType: Context.self) }
-      guard let context = context as? Context else { throw ModelTypeMismatch<View>(modelType: Context.self) }
+      guard let view = view as? View else { throw Temp.error }
+      guard let context = context as? Context else { throw Temp.error }
       closure(view)(context)
     }
     return registrator.add(chapter)

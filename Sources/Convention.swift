@@ -8,7 +8,6 @@
 
 import UIKit
 
-/// Protocol for altering default behaviour of composers via extension
 public protocol Convention {
 
   associatedtype Complying: AnyObject
