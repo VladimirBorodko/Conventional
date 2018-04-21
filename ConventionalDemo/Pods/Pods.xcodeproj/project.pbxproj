@@ -237,7 +237,7 @@
 		CA2678D65982ABB860034A70FACB97E0 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93798E59AFAD0F26F255B20CEA820BAB /* Filter.swift */; };
 		CB189A6A9285746996FF91F206395C29 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 521FB75445E9DF0A8CBAF242E7C6FD0E /* Queue.swift */; };
 		CBA47DF1372F50C1D23906A07DE0E4B0 /* Disposable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F32062CDFA59F35459FD3BE362EEB5B /* Disposable.swift */; };
-		CBAD1EE8629DD1BD5F2113C64B39D77B /* AnyConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B3B57C3ADA4D5131CFC3E8381DF005 /* AnyConverter.swift */; };
+		CBAD1EE8629DD1BD5F2113C64B39D77B /* Converter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B3B57C3ADA4D5131CFC3E8381DF005 /* Converter.swift */; };
 		CDC78F37B5929ED49C4C12483491F616 /* AnyObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = D942FB98277A7F5DE61847A18A059224 /* AnyObserver.swift */; };
 		CF3807EAE41388181EA1DB751EC20B38 /* Signal+Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25A6DED30F0DAD9D530ED52C12420238 /* Signal+Subscription.swift */; };
 		D052F3FE20AE733671E995FE2BF3E1B8 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6A17C3909F7B61FE9A2AA3F10C67C87 /* Map.swift */; };
@@ -279,6 +279,8 @@
 		E79EF37E208BB187000D7A5C /* Transition.Builder.Source+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79EF37D208BB187000D7A5C /* Transition.Builder.Source+UIViewController.swift */; };
 		E79EF380208BB291000D7A5C /* Transition.Builder.Source.Configurator+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79EF37F208BB291000D7A5C /* Transition.Builder.Source.Configurator+UIViewController.swift */; };
 		E79EF382208BB2BB000D7A5C /* Transition.Builder.Source.Configurator+UIStoryboardSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79EF381208BB2BB000D7A5C /* Transition.Builder.Source.Configurator+UIStoryboardSegue.swift */; };
+		E79EF384208BB653000D7A5C /* Compound.ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79EF383208BB653000D7A5C /* Compound.ViewController.swift */; };
+		E79EF386208BB67A000D7A5C /* Compound.Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79EF385208BB67A000D7A5C /* Compound.Window.swift */; };
 		E8996994266B6CF8A4A2212E6421BAFC /* RxCocoa-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D20EDAD8CF7B20C22916431F3CF7B2 /* RxCocoa-dummy.m */; };
 		E8E29044C8C8BA764003B53ACA0A30E3 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3C07EEC5D4709FAE797B983DFEC3FB /* Error.swift */; };
 		E939C6E45C4351A1A77E7AB684703C17 /* DelaySubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9FF374C9882B832692699977449D80 /* DelaySubscription.swift */; };
@@ -593,7 +595,7 @@
 		C7DF2D1D441FD43C597D44B3A4D197F2 /* Conventional.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = Conventional.modulemap; sourceTree = "<group>"; };
 		C8BC82203BE4F1DE871743C867C8EB73 /* UIBarButtonItem+Rx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIBarButtonItem+Rx.swift"; path = "RxCocoa/iOS/UIBarButtonItem+Rx.swift"; sourceTree = "<group>"; };
 		C955CA9748EAACBDF49886358EB4DF9C /* Just.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Just.swift; path = RxSwift/Observables/Just.swift; sourceTree = "<group>"; };
-		C9B3B57C3ADA4D5131CFC3E8381DF005 /* AnyConverter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AnyConverter.swift; path = Sources/AnyConverter.swift; sourceTree = "<group>"; };
+		C9B3B57C3ADA4D5131CFC3E8381DF005 /* Converter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Converter.swift; path = Sources/Converter.swift; sourceTree = "<group>"; };
 		CA28CCF664D86E76351DA321C37ECE6C /* Timer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Timer.swift; path = RxSwift/Observables/Timer.swift; sourceTree = "<group>"; };
 		CB0D32165CB0D41B9D9F8D63BD84154D /* AnonymousObserver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AnonymousObserver.swift; path = RxSwift/Observers/AnonymousObserver.swift; sourceTree = "<group>"; };
 		CB891E8C766E7D5B412810E760F8C663 /* _RXDelegateProxy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = _RXDelegateProxy.m; path = RxCocoa/Runtime/_RXDelegateProxy.m; sourceTree = "<group>"; };
@@ -643,6 +645,8 @@
 		E79EF37D208BB187000D7A5C /* Transition.Builder.Source+UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Transition.Builder.Source+UIViewController.swift"; path = "Sources/Transition.Builder.Source+UIViewController.swift"; sourceTree = "<group>"; };
 		E79EF37F208BB291000D7A5C /* Transition.Builder.Source.Configurator+UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Transition.Builder.Source.Configurator+UIViewController.swift"; path = "Sources/Transition.Builder.Source.Configurator+UIViewController.swift"; sourceTree = "<group>"; };
 		E79EF381208BB2BB000D7A5C /* Transition.Builder.Source.Configurator+UIStoryboardSegue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Transition.Builder.Source.Configurator+UIStoryboardSegue.swift"; path = "Sources/Transition.Builder.Source.Configurator+UIStoryboardSegue.swift"; sourceTree = "<group>"; };
+		E79EF383208BB653000D7A5C /* Compound.ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Compound.ViewController.swift; path = Sources/Compound.ViewController.swift; sourceTree = "<group>"; };
+		E79EF385208BB67A000D7A5C /* Compound.Window.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Compound.Window.swift; path = Sources/Compound.Window.swift; sourceTree = "<group>"; };
 		E84101CFF70ED07860E01D9264A0F09A /* UIButton+Rx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIButton+Rx.swift"; path = "RxCocoa/iOS/UIButton+Rx.swift"; sourceTree = "<group>"; };
 		EBC529D311B2C55551DBC96693AFC781 /* ToArray.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ToArray.swift; path = RxSwift/Observables/ToArray.swift; sourceTree = "<group>"; };
 		EE5402F14B14B57F00A7C843CBB2F36C /* Conventional.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Conventional.xcconfig; sourceTree = "<group>"; };
@@ -735,11 +739,13 @@
 		2130DE030C206EBF9279D1690F7F24F8 /* Conventional */ = {
 			isa = PBXGroup;
 			children = (
-				C9B3B57C3ADA4D5131CFC3E8381DF005 /* AnyConverter.swift */,
 				E15DCF29669CF454795889137CDE191E /* Compound.swift */,
 				3FD2FAA8968E3FBC99876CB51C320080 /* Compound.CollectionView.swift */,
 				750AD36CFA015F2F1058108F127B1C61 /* Compound.TableView.swift */,
+				E79EF383208BB653000D7A5C /* Compound.ViewController.swift */,
+				E79EF385208BB67A000D7A5C /* Compound.Window.swift */,
 				369EE841C7F15E277278DD15528247F8 /* Convention.swift */,
+				C9B3B57C3ADA4D5131CFC3E8381DF005 /* Converter.swift */,
 				1F6CF07617329DF975703A7208BC763A /* Conventional.swift */,
 				F4CA4E55C4E69488E0F26A2719F630C9 /* Errors.swift */,
 				19FF83D4E4885FBBD8745BD32D746C2A /* Objc.h */,
@@ -1576,7 +1582,7 @@
 			files = (
 				E79EF380208BB291000D7A5C /* Transition.Builder.Source.Configurator+UIViewController.swift in Sources */,
 				E79EF37C208BB13E000D7A5C /* Transition.Builder.Source.Transit+UIWindow.swift in Sources */,
-				CBAD1EE8629DD1BD5F2113C64B39D77B /* AnyConverter.swift in Sources */,
+				CBAD1EE8629DD1BD5F2113C64B39D77B /* Converter.swift in Sources */,
 				7F13F07DABC1A4CC031120025DDE1A7C /* Compound.CollectionView.swift in Sources */,
 				93D7D2BE999E62C190953CE3B3A60FCE /* Compound.swift in Sources */,
 				E79EF382208BB2BB000D7A5C /* Transition.Builder.Source.Configurator+UIStoryboardSegue.swift in Sources */,
@@ -1588,7 +1594,9 @@
 				4C0F4CC0D81EE0A5654A94C9ACA01284 /* Errors.swift in Sources */,
 				197F102DE6DC04A01E36C7CCEA37DC8D /* Objc.mm in Sources */,
 				48BD64AC5212697D917511B440EB2285 /* Objc.swift in Sources */,
+				E79EF384208BB653000D7A5C /* Compound.ViewController.swift in Sources */,
 				3401C50310F65C32FD243F3894738C29 /* OpaqueWrapper.swift in Sources */,
+				E79EF386208BB67A000D7A5C /* Compound.Window.swift in Sources */,
 				1A67953D15F9C95E02D2A9BFB01AAC07 /* Reuseable.Builder+UICollectionView.swift in Sources */,
 				E99FC0014944E59005829F0131979519 /* Reuseable.Builder+UITableView.swift in Sources */,
 				E79EF37E208BB187000D7A5C /* Transition.Builder.Source+UIViewController.swift in Sources */,

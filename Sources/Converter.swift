@@ -1,5 +1,5 @@
 //
-//  AnyConverter.swift
+//  Converter.swift
 //  Conventional
 //
 //  Created by Vladimir Borodko on 08/12/2017.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct AnyConverter<Output> {
+public struct Converter<Output> {
   private let mappers: [String: (Any)throws->Output]
 
   fileprivate init
@@ -36,7 +36,7 @@ public struct AnyConverter<Output> {
     public var mappers: [String: (Any)throws->Output] = [:]
     public init() {}
 
-    public func build() -> AnyConverter<Output> { return .init(mappers: mappers) }
+    public func build() -> Converter<Output> { return .init(mappers: mappers) }
 
     public func append<Input>
       ( _: Input.Type
