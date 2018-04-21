@@ -50,7 +50,7 @@ extension Reuseable.Builder where T == UICollectionView {
     }
   }
 
-  public func build() -> CollectionViewStock {
+  public func build() -> Compound.CollectionView {
     do {
       return try .init(self)
     } catch let e {

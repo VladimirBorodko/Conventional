@@ -1,30 +1,13 @@
 //
-//  TableViewStock.swift
+//  Compound.TableView.swift
 //  Conventional
 //
-//  Created by Vladimir Borodko on 31/03/2018.
+//  Created by Vladimir Borodko on 21/04/2018.
 //
 
 import UIKit
 
-public final class TableViewStock {
-
-  internal let cells: [String: Reuseable.Brief]
-  internal let headers: [String: Reuseable.Brief]
-  internal let footers: [String: Reuseable.Brief]
-  internal weak var tableView: UITableView?
-
-  internal init
-    ( _ builder: Reuseable.Builder<UITableView>
-    ) throws {
-    self.tableView = builder.view
-    try builder.cells.registerUniqueReuseIds(builder.view.registerCell(chapter:))
-    cells = try builder.cells.uniqueModelContexts()
-    try builder.supplementaries.values.reduce(into: [], +=).registerUniqueReuseIds(builder.view.registerView(chapter:))
-    headers = try builder.headers.uniqueModelContexts()
-    footers = try builder.footers.uniqueModelContexts()
-  }
-
+extension Compound.TableView {
   public func cell
     ( from tv: UITableView
     , at ip: IndexPath
@@ -76,4 +59,3 @@ public final class TableViewStock {
     }
   }
 }
-

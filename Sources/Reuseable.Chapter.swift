@@ -8,6 +8,7 @@
 import Foundation
 
 extension Reuseable.Chapter {
+
   internal init<T,View: AnyObject>
     ( configurator: Reuseable.Builder<T>.Registrator<View>.Configurator
     , contextType: Any.Type

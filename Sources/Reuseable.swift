@@ -9,7 +9,7 @@ import UIKit
 
 public enum Reuseable {
 
-  internal typealias Configure = ( _ view: Any, _ model: Any) throws -> Void
+  internal typealias Configure = ( _ view: AnyObject, _ context: Any) throws -> Void
 
   internal enum Source {
     case aClass(AnyClass)

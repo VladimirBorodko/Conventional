@@ -39,7 +39,7 @@ extension Reuseable.Builder where T == UITableView {
     }
   }
 
-  public func build() -> TableViewStock {
+  public func build() -> Compound.TableView {
     do {
       return try .init(self)
     } catch let e {

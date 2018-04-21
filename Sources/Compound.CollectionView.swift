@@ -1,30 +1,13 @@
 //
-//  CollectionViewStock.swift
+//  Compound.CollectionView.swift
 //  Conventional
 //
-//  Created by Vladimir Borodko on 03/04/2018.
+//  Created by Vladimir Borodko on 21/04/2018.
 //
 
 import UIKit
 
-public final class CollectionViewStock {
-
-  internal let cells: [String: Reuseable.Brief]
-  internal let supplementaries: [String: [String: Reuseable.Brief]]
-  internal weak var collectionView: UICollectionView?
-
-  internal init
-    ( _ builder: Reuseable.Builder<UICollectionView>
-    ) throws {
-    self.collectionView = builder.view
-    try builder.cells.registerUniqueReuseIds(builder.view.registerCell(chapter:))
-    cells = try builder.cells.uniqueModelContexts()
-    supplementaries = try builder.supplementaries.reduce(into: [:]) { result, views in
-      try views.value.registerUniqueReuseIds { try builder.view.registerView(kind: views.key, chapter: $0) }
-      result[views.key] = try views.value.uniqueModelContexts()
-    }
-  }
-
+extension Compound.CollectionView {
   public func cell
     ( from cv: UICollectionView
     , at ip: IndexPath
@@ -118,4 +101,3 @@ public final class CollectionViewStock {
     }
   }
 }
-
