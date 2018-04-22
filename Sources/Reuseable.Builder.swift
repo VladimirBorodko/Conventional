@@ -30,9 +30,9 @@ extension Reuseable.Builder where Built == UICollectionView {
     ( _: View.Type
     ) -> Registrator<View> {
     return .init { brief in
-      var compound = self
-      compound.cells.append(brief)
-      return compound
+      var builder = self
+      builder.cells.append(brief)
+      return builder
     }
   }
 
@@ -40,9 +40,9 @@ extension Reuseable.Builder where Built == UICollectionView {
     ( _: View.Type
     ) -> Registrator<View> {
     return .init { brief in
-      var compound = self
-      compound.supplementaries[UICollectionElementKindSectionHeader] = compound.headers + [brief]
-      return compound
+      var builder = self
+      builder.supplementaries[UICollectionElementKindSectionHeader] = builder.headers + [brief]
+      return builder
     }
   }
 
@@ -50,9 +50,9 @@ extension Reuseable.Builder where Built == UICollectionView {
     ( _: View.Type
     ) -> Registrator<View> {
     return .init { brief in
-      var compound = self
-      compound.supplementaries[UICollectionElementKindSectionFooter] = compound.footers + [brief]
-      return compound
+      var builder = self
+      builder.supplementaries[UICollectionElementKindSectionFooter] = builder.footers + [brief]
+      return builder
     }
   }
 
@@ -61,9 +61,9 @@ extension Reuseable.Builder where Built == UICollectionView {
     , of kind: String
     ) -> Registrator<View> {
     return .init { brief in
-      var compound = self
-      compound.supplementaries[kind] = (compound.supplementaries[kind] ?? []) + [brief]
-      return compound
+      var builder = self
+      builder.supplementaries[kind] = (builder.supplementaries[kind] ?? []) + [brief]
+      return builder
     }
   }
 
@@ -83,9 +83,9 @@ extension Reuseable.Builder where Built == UITableView {
     ( _: View.Type
     ) -> Registrator<View> {
     return .init { brief in
-      var compound = self
-      compound.cells.append(brief)
-      return compound
+      var builder = self
+      builder.cells.append(brief)
+      return builder
     }
   }
 
@@ -93,9 +93,9 @@ extension Reuseable.Builder where Built == UITableView {
     ( _: View.Type
     ) -> Registrator<View> {
     return .init { brief in
-      var compound = self
-      compound.supplementaries[UICollectionElementKindSectionHeader] = compound.headers + [brief]
-      return compound
+      var builder = self
+      builder.supplementaries[UICollectionElementKindSectionHeader] = builder.headers + [brief]
+      return builder
     }
   }
 
@@ -103,9 +103,9 @@ extension Reuseable.Builder where Built == UITableView {
     ( _: View.Type
     ) -> Registrator<View> {
     return .init { brief in
-      var compound = self
-      compound.supplementaries[UICollectionElementKindSectionFooter] = compound.footers + [brief]
-      return compound
+      var builder = self
+      builder.supplementaries[UICollectionElementKindSectionFooter] = builder.footers + [brief]
+      return builder
     }
   }
 
