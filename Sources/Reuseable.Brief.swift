@@ -28,10 +28,7 @@ extension Array where Element == Reuseable.Brief {
     ( _ register: (Reuseable.Brief) throws -> Void
     ) throws {
     _ = try self.reduce(into: [String:Void]()) { dict, brief in
-      guard dict[brief.reuseId] == nil else {
-        // If you need many model to one view relation try to register same view with different reuse identifiers
-        throw NotUniqueReuseId(id: brief.reuseId)
-      }
+      guard dict[brief.reuseId] == nil else { throw Errors.NotUnique(key: brief.reuseId) }
       try register(brief)
       dict[brief.reuseId] = ()
     }
@@ -40,7 +37,7 @@ extension Array where Element == Reuseable.Brief {
   internal func uniqueModelContexts() throws -> [String: Reuseable] {
     return try self.reduce(into: [:]) { dict, brief in
       let key = String(reflecting: brief.contextType)
-      guard dict[key] == nil else { throw NotUniqueModel(type: brief.contextType) }
+      guard dict[key] == nil else { throw Errors.NotUnique(key: key) }
       dict[key] = .init(reuseId: brief.reuseId, configure: brief.configure)
     }
   }

@@ -35,19 +35,19 @@ class WelcomeC: UIViewController, UITableViewDataSource {
 
   @IBOutlet weak var tableView: UITableView!
 
-  var compound: Compound.TableView!
+  var tableConfiguration: Configuration.TableView!
   var cellModels: [CellModel] = [StringVM(text: "1"),StringVM(text: "2"), IntVM(number: 3)]
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    compound = try? tableView.conventional.compound
+    tableConfiguration = try? tableView.conventional.configuration
       .cell(StringCellV.self).byClass().configure(with: StringCellV.configure(stringVM:))
       .cell(IntCellV.self).byClass().configure(with: IntCellV.configure(intVM:))
       .build()
   }
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    return try! compound.cell(from: tableView, at: indexPath, for: cellModels[indexPath.row])
+    return try! tableConfiguration.cell(from: tableView, at: indexPath, for: cellModels[indexPath.row])
   }
 
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

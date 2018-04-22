@@ -1,13 +1,13 @@
 //
-//  Compound.swift
+//  Configuration.swift
 //  Conventional
 //
 //  Created by Vladimir Borodko on 21/04/2018.
 //
 
-import Foundation
+import UIKit
 
-public enum Compound {
+public enum Configuration {
 
   public struct CollectionView {
 
@@ -27,6 +27,7 @@ public enum Compound {
   public struct ViewController {
 
     internal weak var source: UIViewController?
+    internal let sourceType: AnyClass
     internal let segues: [Transition.Brief.Seguer.Key: Transition.Configure]
     internal let provider: Converter<UIViewController>
     public let converter: Converter<Transition>
@@ -35,6 +36,7 @@ public enum Compound {
   public struct Window {
 
     internal weak var source: UIWindow?
-    public let transiter: Converter<Transition>
+    internal let sourceType: AnyClass
+    public let converter: Converter<Transition>
   }
 }

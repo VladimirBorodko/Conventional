@@ -23,10 +23,7 @@ extension Transition.Builder.Source {
       let controller = try objc_throws {
         UIStoryboard(name: storyboardName, bundle: bundle).instantiateInitialViewController()
       }
-      guard let container = controller as? Container else {
-        throw Temp.error
-      }
-      return container
+      return try cast(controller, Container.self)
     }
   }
 
@@ -39,10 +36,7 @@ extension Transition.Builder.Source {
       let controller = try objc_throws {
         UIStoryboard(name: storyboardName, bundle: bundle).instantiateViewController(withIdentifier: storyboardId)
       }
-      guard let container = controller as? Container else {
-        throw Temp.error
-      }
-      return container
+      return try cast(controller, Container.self)
     }
   }
 }
@@ -56,8 +50,8 @@ extension Transition.Builder.Source where Built: UIViewController {
       var builder = self.builder
       let extract = self.extract
       let brief = Transition.Brief.Seguer(destinationType: Container.self, segueId: segueId) { segue, sender in
-        guard let segue = segue as? UIStoryboardSegue else { throw Temp.error }
-        guard let container = segue.destination as? Container else { throw Temp.error }
+        let segue = try cast(segue, UIStoryboardSegue.self)
+        let container = try cast(segue.destination, Container.self)
         let target = try extract(container)
         try configure(target, sender)
       }
@@ -79,9 +73,9 @@ extension Transition.Builder.Source where Built: UIViewController {
       var builder = self.builder
       let extract = self.extract
       let brief = Transition.Brief.Transiter(contextType: contextType) { controller, context in
-        guard let controller = controller as? Built else { throw Temp.error }
+        let controller = try cast(controller, Built.self)
         let sender = Transition.Brief.Seguer.Sender { segue in
-          guard let container = segue.destination as? Container else { throw Temp.error }
+          let container = try cast(segue.destination, Container.self)
           let target = try extract(container)
           try configure(target, context)
         }

@@ -12,12 +12,12 @@ extension Transition.Builder.Source.Transit {
   public func customTransit
     ( by perform: @escaping (Built, Container) throws -> Void
     ) -> Transition.Builder<Built>.Source<Target, Container>.Configurator {
+    var builder = source.builder
+    let extract = source.extract
+    let make = self.make
     return .init(built: source.builder.built) { contextType, configure in
-      var builder = self.source.builder
-      let extract = self.source.extract
-      let make = self.make
       let brief = Transition.Brief.Transiter(contextType: contextType) { controller, context in
-        guard let controller = controller as? Built else { throw Temp.error }
+        let controller = try cast(controller, Built.self)
         let container = try make()
         let target = try extract(container)
         try configure(target, context)
@@ -32,10 +32,10 @@ extension Transition.Builder.Source.Transit {
 extension Transition.Builder.Source.Transit where Container: UIViewController {
 
   public func provide() -> Transition.Builder<Built>.Source<Target, Container>.Configurator {
+    var builder = source.builder
+    let extract = source.extract
+    let make = self.make
     return .init(built: source.builder.built) { contextType, configure in
-      var builder = self.source.builder
-      let extract = self.source.extract
-      let make = self.make
       let brief = Transition.Brief.Provider(contextType: contextType) { context in
         let container = try make()
         let target = try extract(container)

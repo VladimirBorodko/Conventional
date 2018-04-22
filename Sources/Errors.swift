@@ -5,20 +5,17 @@
 //  Created by Vladimir Borodko on 03/04/2018.
 //
 
-import UIKit
+import Foundation
 
-public struct OwnerDeallocated<View>: Error { let configuratorType: AnyObject.Type }
-public struct ViewTypeMismatch<View>: Error { let modelType: Any.Type }
-public struct ModelTypeMismatch<View>: Error { let modelType: Any.Type }
-public struct NotUniqueReuseId: Error { let id: String }
-public struct NotUniqueModel: Error { let type: Any.Type }
-public struct NotRegisteredContext: Error { let type: Any.Type }
-public struct WrongViewInstance: Error { let view: AnyObject }
-public struct OpaqueWrapperUnwrapFailed: Error { let type: Any.Type }
-public struct ExtractFailed: Error { let type: Any.Type }
-public struct SegueNotRecognized: Error {let segue: UIStoryboardSegue}
+internal enum Errors {
 
-public struct Temp: Error {
-  static var error: Temp { return Temp() }
+  internal struct ObjectDellocated: Error { let type: AnyClass}
+  internal struct NotUnique<Key: Hashable>: Error { let key: Key }
+  internal struct NotRegistered<Key: Hashable>: Error { let key: Key }
+  internal struct UnwrapFailed: Error { let type: Any.Type }
+  internal struct WrongInstance: Error { let type: AnyClass }
+  internal struct CastFailed: Error {
+    let actual: Any.Type
+    let expected: Any.Type
+  }
 }
-

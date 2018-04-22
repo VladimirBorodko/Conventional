@@ -43,22 +43,22 @@ extension UIViewController: ConventionComplying { }
 
 extension Conventional where Complying: UIViewController {
 
-  public var compound: Transition.Builder<Complying> { return .init(complying) }
+  public var configuration: Transition.Builder<Complying> { return .init(complying) }
 }
 
 extension Conventional where Complying: UIWindow {
 
-  public var compound: Transition.Builder<Complying> { return .init(complying) }
+  public var configuration: Transition.Builder<Complying> { return .init(complying) }
 }
 
 extension Conventional where Complying: UICollectionView {
 
-  public var compound: Reuseable.Builder<UICollectionView> { return .init(complying) }
+  public var configuration: Reuseable.Builder<UICollectionView> { return .init(complying) }
 }
 
 extension Conventional where Complying: UITableView {
   
-  public var compound: Reuseable.Builder<Complying> { return .init(complying) }
+  public var configuration: Reuseable.Builder<Complying> { return .init(complying) }
 }
 
 public protocol ConventionalConfigurable {

@@ -1,5 +1,5 @@
 //
-//  Compound.ViewController.swift
+//  Configuration.ViewController.swift
 //  Conventional
 //
 //  Created by Vladimir Borodko on 21/04/2018.
@@ -7,12 +7,13 @@
 
 import UIKit
 
-extension Compound.ViewController {
+extension Configuration.ViewController {
 
   internal init<VC: UIViewController>
     ( _ builder: Transition.Builder<VC>
     ) throws {
     source = builder.built
+    sourceType = type(of: builder.built)
     segues = try builder.seguers.uniqueSegues()
     let transits = try builder.transiters.uniqueTransitions().mapValues { configure in
       return { context in
@@ -29,7 +30,7 @@ extension Compound.ViewController {
     ( _ transition: Transition
     ) throws {
     do {
-      guard let source = source else { throw Temp.error }
+      let source = try unwrap(self.source)
       try transition.perform(source)
     } catch let e {
       assertionFailure("\(e)")
@@ -67,7 +68,7 @@ extension Compound.ViewController {
     ( _ context: Any
     ) throws {
     do {
-      guard let source = source else { throw Temp.error }
+      let source = try unwrap(self.source)
       try converter.convert(context).perform(source)
     } catch let e {
       assertionFailure("\(e)")

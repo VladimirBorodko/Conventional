@@ -20,8 +20,8 @@ extension Transition.Builder.Source.Configurator where Container == UIStoryboard
     ( by closure: @escaping (Built, Target, _ sender: Any) throws -> Void
     ) -> Transition.Builder<Built> {
     return apply(Any.self) { [weak built = self.built]  target, sender in
-      guard let built = built else { throw Temp.error }
-      guard let target = target as? Target else { throw Temp.error }
+      let built = try unwrap(built)
+      let target = try cast(target, Target.self)
       try closure(built, target, sender)
     }
   }
@@ -39,7 +39,7 @@ extension Transition.Builder.Source.Configurator where Container == UIStoryboard
     , with closure: @escaping (Router) -> (Built, Target, _ sender: Any) -> Void
     ) -> Transition.Builder<Built> {
     return customConfigure { [weak router] built, target, sender in
-      guard let router = router else { throw Temp.error }
+      let router = try unwrap(router)
       closure(router)(built, target, sender)
     }
   }
@@ -49,7 +49,7 @@ extension Transition.Builder.Source.Configurator where Container == UIStoryboard
     , with closure: @escaping (Router) -> (Target) -> Void
     ) -> Transition.Builder<Built> {
     return customConfigure { [weak router] _, target, sender in
-      guard let router = router else { throw Temp.error }
+      let router = try unwrap(router)
       closure(router)(target)
     }
   }
@@ -62,9 +62,9 @@ extension Transition.Builder.Source.Configurator where Container: UIViewControll
     , with closure: @escaping (Built, Target, Context) throws -> Void
     ) -> Transition.Builder<Built> {
     return apply(Context.self) { [weak built = self.built] target, context in
-      guard let built = built else { throw Temp.error }
-      guard let target = target as? Target else { throw Temp.error }
-      guard let context = context as? Context else { throw Temp.error }
+      let built = try unwrap(built)
+      let target = try cast(target, Target.self)
+      let context = try cast(context, Context.self)
       try closure(built, target, context)
     }
   }
@@ -90,7 +90,7 @@ extension Transition.Builder.Source.Configurator where Container: UIViewControll
     , with closure: @escaping (Router) -> (Built, Target, Context) -> Void
     ) -> Transition.Builder<Built> {
     return customConfigure(Context.self) { [weak router] built, target, context in
-      guard let router = router else { throw Temp.error }
+      let router = try unwrap(router)
       closure(router)(built, target, context)
     }
   }

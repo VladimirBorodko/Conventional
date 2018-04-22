@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		17D2EAE5DFACAE2E0C7103B8 /* Pods_ConventionalDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E395BCFE6141A416F00185B /* Pods_ConventionalDemo.framework */; };
+		E7C84043208CC17600D44498 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C84042208CC17600D44498 /* Router.swift */; };
+		E7C84046208CCDE300D44498 /* Optional.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C84045208CCDE300D44498 /* Optional.swift */; };
+		E7C8404E208CD13600D44498 /* NSObject+DisposeBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C8404D208CD13600D44498 /* NSObject+DisposeBag.swift */; };
 		E7E14B4A206C44180048FA13 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7E14B49206C44180048FA13 /* Assets.xcassets */; };
 		E7E14B5C206C49BB0048FA13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E14B56206C49BB0048FA13 /* AppDelegate.swift */; };
 		E7E14B5D206C49BB0048FA13 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7E14B59206C49BB0048FA13 /* LaunchScreen.storyboard */; };
@@ -18,6 +21,9 @@
 /* Begin PBXFileReference section */
 		3E395BCFE6141A416F00185B /* Pods_ConventionalDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ConventionalDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5744E247D425EB8A200A6847 /* Pods-ConventionalDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConventionalDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-ConventionalDemo/Pods-ConventionalDemo.release.xcconfig"; sourceTree = "<group>"; };
+		E7C84042208CC17600D44498 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+		E7C84045208CCDE300D44498 /* Optional.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Optional.swift; sourceTree = "<group>"; };
+		E7C8404D208CD13600D44498 /* NSObject+DisposeBag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+DisposeBag.swift"; sourceTree = "<group>"; };
 		E7E14B3F206C44180048FA13 /* ConventionalDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConventionalDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7E14B49206C44180048FA13 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E7E14B4E206C44180048FA13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -57,6 +63,47 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		E7C84044208CCDCF00D44498 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E7C8404C208CD11100D44498 /* Foundation+RxSwift */,
+				E7C84049208CD0DC00D44498 /* UIKit+RxCocoa */,
+				E7C84048208CD0D600D44498 /* UIKit */,
+				E7C84047208CD0B800D44498 /* Foundation */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E7C84047208CD0B800D44498 /* Foundation */ = {
+			isa = PBXGroup;
+			children = (
+				E7C84045208CCDE300D44498 /* Optional.swift */,
+			);
+			path = Foundation;
+			sourceTree = "<group>";
+		};
+		E7C84048208CD0D600D44498 /* UIKit */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UIKit;
+			sourceTree = "<group>";
+		};
+		E7C84049208CD0DC00D44498 /* UIKit+RxCocoa */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "UIKit+RxCocoa";
+			sourceTree = "<group>";
+		};
+		E7C8404C208CD11100D44498 /* Foundation+RxSwift */ = {
+			isa = PBXGroup;
+			children = (
+				E7C8404D208CD13600D44498 /* NSObject+DisposeBag.swift */,
+			);
+			path = "Foundation+RxSwift";
+			sourceTree = "<group>";
+		};
 		E7E14B36206C44180048FA13 = {
 			isa = PBXGroup;
 			children = (
@@ -88,6 +135,7 @@
 		E7E14B54206C49BB0048FA13 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				E7C84044208CCDCF00D44498 /* Extensions */,
 				E7E14B55206C49BB0048FA13 /* Application */,
 				E7E14B57206C49BB0048FA13 /* Controllers */,
 			);
@@ -98,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				E7E14B56206C49BB0048FA13 /* AppDelegate.swift */,
+				E7C84042208CC17600D44498 /* Router.swift */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -262,7 +311,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				E7E14B5E206C49BB0048FA13 /* WelcomeC.swift in Sources */,
+				E7C84043208CC17600D44498 /* Router.swift in Sources */,
+				E7C8404E208CD13600D44498 /* NSObject+DisposeBag.swift in Sources */,
 				E7E14B5C206C49BB0048FA13 /* AppDelegate.swift in Sources */,
+				E7C84046208CCDE300D44498 /* Optional.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

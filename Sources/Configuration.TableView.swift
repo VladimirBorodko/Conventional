@@ -1,5 +1,5 @@
 //
-//  Compound.TableView.swift
+//  Configuration.TableView.swift
 //  Conventional
 //
 //  Created by Vladimir Borodko on 21/04/2018.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension Compound.TableView {
+extension Configuration.TableView {
   
   public func cell
     ( from tv: UITableView
@@ -15,8 +15,9 @@ extension Compound.TableView {
     , for context: Any
     ) throws -> UITableViewCell {
     do {
-      guard tv === tableView else { throw WrongViewInstance(view: tv) }
-      guard let configurator = try cells[key(context)] else { throw Temp.error }
+      try checkSameInstance(tableView, tv)
+      let key = try makeKey(context)
+      guard let configurator = cells[key] else { throw Errors.NotRegistered(key: key) }
       let cell = try objc_throws { tv.dequeueReusableCell(withIdentifier: configurator.reuseId, for: ip) }
       try configurator.configure(cell, context)
       return cell
@@ -32,8 +33,8 @@ extension Compound.TableView {
     , for context: Any
     ) throws -> UITableViewHeaderFooterView? {
     do {
-      guard tv === tableView else {throw WrongViewInstance(view: tv)}
-      guard case let config?? = try? headers[key(context)] else { return nil }
+      try checkSameInstance(tableView, tv)
+      guard case let config?? = try? headers[makeKey(context)] else { return nil }
       let view = try objc_throws { tv.dequeueReusableHeaderFooterView(withIdentifier: config.reuseId) }
       try view.map { try config.configure($0, context) }
       return view
@@ -49,8 +50,8 @@ extension Compound.TableView {
     , for context: Any
     ) throws -> UITableViewHeaderFooterView? {
     do {
-      guard tv === tableView else {throw WrongViewInstance(view: tv)}
-      guard case let config?? = try? footers[key(context)] else { return nil }
+      try checkSameInstance(tableView, tv)
+      guard case let config?? = try? footers[makeKey(context)] else { return nil }
       let view = try objc_throws { tv.dequeueReusableHeaderFooterView(withIdentifier: config.reuseId) }
       try view.map { try config.configure($0, context) }
       return view

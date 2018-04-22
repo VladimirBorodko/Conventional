@@ -45,7 +45,7 @@ extension Convention {
         , let complying = navigationController.viewControllers.first as? Complying {
         return complying
       }
-      throw ExtractFailed(type: Complying.self)
+      throw Errors.CastFailed(actual: type(of: instantiated), expected: Container.self)
     }
   }
   public static func mock<Context>() -> (Complying, Context) throws -> Void {

@@ -13,41 +13,27 @@ public struct Converter<Output> {
 
   internal init
     ( _ converts: [String: Convert]
-    ) {
-    self.converts = converts
-  }
+    )
+  { self.converts = converts }
 
   public func canConvert<Input>
     ( _ input: Input
-    ) -> Bool {
-    guard let key = try? key(input) else {return false}
+    ) -> Bool
+  {
+    guard let key = try? makeKey(input) else {return false}
     return converts[key] != nil
   }
 
   public func convert<Input>
     ( _ input: Input
-    ) throws -> Output {
-    let input = try (input as? OpaqueWrapper).map{try $0.unwrapValue()} ?? input
-    guard let map = try converts[key(input)] else {throw NotRegistered(value: input)}
+    ) throws -> Output
+  {
+    let key = try makeKey(input)
+    guard let map = converts[key] else {throw Errors.NotRegistered(key: key)}
     return try map(input)
   }
 
   internal typealias Convert = (Any) throws -> Output
-
-  public struct NotRegistered: Error {
-
-    let value: Any
-  }
-
-  public struct NotUnique: Error {
-
-    let type: Any.Type
-  }
-
-  public struct TypeMismatch: Error {
-    
-    let type: Any.Type
-  }
 
   public class Builder {
 
@@ -62,9 +48,9 @@ public struct Converter<Output> {
       , convert: @escaping (Input) throws -> Output
       ) throws -> Builder {
       let key = String(reflecting: Input.self)
-      guard converts[key] == nil else {throw NotUnique(type: Input.self)}
+      guard converts[key] == nil else { throw Errors.NotUnique(key: key) }
       converts[key] = {
-        guard let input = $0 as? Input else {throw TypeMismatch(type: Input.self)}
+        let input = try cast($0, Input.self)
         return try convert(input)
       }
       return self

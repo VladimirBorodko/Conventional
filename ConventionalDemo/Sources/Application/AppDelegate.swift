@@ -13,15 +13,12 @@ import Conventional
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
-
+  var router: Router?
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-    let window = UIWindow(frame: UIScreen.main.bounds)
-    let compound = try! window.conventional.compound
-      .register(WelcomeC.self).instantiateInitial().changeRoot().noContext()
-      .build()
-    try! compound.transit(WelcomeC.self)
-    self.window = window
+
+    window = UIWindow(frame: UIScreen.main.bounds)
+    router = Router(appDelegate: self, launchOptions: launchOptions)
     return true
   }
 

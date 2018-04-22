@@ -162,7 +162,7 @@ extension Reuseable.Builder where Built == UICollectionView {
     return supplementary(View.self, kind: kind).inStoryboard(reuseId: reuseId).configure(with: View.configure(context:))
   }
 
-  public func build() throws -> Compound.CollectionView {
+  public func build() throws -> Configuration.CollectionView {
     do {
       return try .init(self)
     } catch let e {
@@ -273,7 +273,7 @@ extension Reuseable.Builder where Built == UITableView {
     return footer(View.self).inStoryboard(reuseId: reuseId).configure(with: View.configure(context:))
   }
 
-  public func build() throws -> Compound.TableView {
+  public func build() throws -> Configuration.TableView {
     do {
       return try .init(self)
     } catch let e {

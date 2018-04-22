@@ -14,8 +14,8 @@ extension Reuseable.Builder.Registrator.Configurator {
     , by closure: @escaping (View, Context) throws -> Void
     ) -> Reuseable.Builder<Built> {
     let brief = Reuseable.Brief(configurator: self, contextType: Context.self) { view, context in
-      guard let view = view as? View else { throw Temp.error }
-      guard let context = context as? Context else { throw Temp.error }
+      let view = try cast(view, View.self)
+      let context = try cast(context, Context.self)
       try closure(view,context)
     }
     return registrator.apply(brief)
@@ -26,7 +26,7 @@ extension Reuseable.Builder.Registrator.Configurator {
     , with closure: @escaping (Owner) -> (View, Context) -> Void
     ) -> Reuseable.Builder<Built> {
     return customConfigure(Context.self) { [weak owner] view, context in
-      guard let owner = owner else { throw Temp.error }
+      let owner = try unwrap(owner)
       closure(owner)(view,context)
     }
   }

@@ -38,8 +38,8 @@ extension Transition.Builder where Built: ConventionComplying {
     ) -> Transition.Builder<Built> {
     var builder = self
     let brief = Transition.Brief.Transiter(contextType: Context.self) { built, context in
-      guard let built = built as? Built else { throw Temp.error }
-      guard let context = context as? Context else { throw Temp.error }
+      let built = try cast(built, Built.self)
+      let context = try cast(context, Context.self)
       try perform(built, context)
     }
     builder.transiters.append(brief)
@@ -49,7 +49,7 @@ extension Transition.Builder where Built: ConventionComplying {
 
 extension Transition.Builder where Built: UIViewController {
 
-  public func build() throws -> Compound.ViewController {
+  public func build() throws -> Configuration.ViewController {
     do {
       return try .init(self)
     } catch let e {
@@ -103,7 +103,7 @@ extension Transition.Builder where Built: UIViewController {
 
 extension Transition.Builder where Built: UIWindow {
   
-  public func build() throws -> Compound.Window {
+  public func build() throws -> Configuration.Window {
     do {
       return try .init(self)
     } catch let e {

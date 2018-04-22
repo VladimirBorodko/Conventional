@@ -4,7 +4,7 @@
 
 ###### Conventional is a library that helps you to:
 
-* unify storyboard segues and transitions to controllers
+* unify storyboard segues and custom transitions
 * separate storyboard related code from view controllers
 * export transition logic without exposing view controllers
 * reduce boilerplate by using reflection in the way that is conventional for your project
@@ -21,12 +21,9 @@
 ###### Configure UITableView or UICollectionView:
 
 ``` swift
-var compound: Compound.TableView!
-var cellModels: [CellModel] = [StringVM(text: "1"),StringVM(text: "2"), IntVM(number: 3)]
-
 override func viewDidLoad() {
   super.viewDidLoad()
-  compound = try? tableView.conventional.compound
+  tableConfiguration = try? tableView.conventional.configuration
     .cell(StringCellV.self).byClass().configure(with: StringCellV.configure(stringVM:))
     .cell(IntCellV.self).inStoryboard().configure(with: IntCellV.configure(intVM:))
     .cellFromNib(ConventionalCell1V.self)
@@ -35,7 +32,7 @@ override func viewDidLoad() {
 }
 
 func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-  return try! compound.cell(from: tableView, at: indexPath, for: cellModels[indexPath.row])
+  return try! tableConfiguration!.cell(from: tableView, at: indexPath, for: cellModels[indexPath.row])
 }
 ```
 
@@ -44,11 +41,13 @@ func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> U
 ``` swift
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
   let window = UIWindow(frame: UIScreen.main.bounds)
-  let compound = try! window.conventional.compound
+  self.window = window
+
+  windowConfiguration = try? window.conventional.configuration
     .register(WelcomeC.self).instantiateInitial().changeRoot().noContext()
     .build()
-  try! compound.transit(WelcomeC.self)
-  self.window = window
+
+  _ = try? windowConfiguration?.transit(WelcomeC.self)
   return true
 }
 ```
@@ -58,15 +57,15 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 ``` swift
 override func viewDidLoad() {
   super.viewDidLoad()
-  compound = try! self.conventional.compound
+  configuration = try? self.conventional.configuration
     .embedd(SubController.self, \.subController)
     .showInitial(SeguedC.self)
     .build()
-  viewModel = ViewModel(converter: compound.converter, transit: {[weak self] in try! self?.compound.perform($0)})
+  viewModel = ViewModel(converter: configuration.converter, transit: {[weak self] in _ = try? self?.configuration.perform($0)})
 }
 
 override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-  try! compound.prepare(for: segue, sender: sender)
+  try? configuration?.prepare(for: segue, sender: sender)
 }
 ```
 

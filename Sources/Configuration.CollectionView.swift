@@ -1,5 +1,5 @@
 //
-//  Compound.CollectionView.swift
+//  Configuration.CollectionView.swift
 //  Conventional
 //
 //  Created by Vladimir Borodko on 21/04/2018.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension Compound.CollectionView {
+extension Configuration.CollectionView {
   
   public func cell
     ( from cv: UICollectionView
@@ -15,8 +15,9 @@ extension Compound.CollectionView {
     , for context: Any
     ) throws -> UICollectionViewCell {
     do {
-      guard cv === collectionView else { throw WrongViewInstance(view: cv) }
-      guard let configurator = try cells[key(context)] else { throw Temp.error }
+      try checkSameInstance(collectionView, cv)
+      let key = try makeKey(context)
+      guard let configurator = cells[key] else { throw Errors.NotRegistered(key: key) }
       let cell = try objc_throws { cv.dequeueReusableCell(withReuseIdentifier: configurator.reuseId, for: ip) }
       try configurator.configure(cell, context)
       return cell
@@ -29,7 +30,7 @@ extension Compound.CollectionView {
   public func hasHeader
     ( for context: Any
     ) -> Bool {
-    guard let key = try? key(context) else {return false}
+    guard let key = try? makeKey(context) else {return false}
     return supplementaries[UICollectionElementKindSectionHeader]?[key] != nil
   }
 
@@ -39,9 +40,10 @@ extension Compound.CollectionView {
     , for context: Any
     ) throws -> UICollectionReusableView {
     do {
-      guard cv === collectionView else {throw WrongViewInstance(view: cv)}
-      guard let config = try supplementaries[UICollectionElementKindSectionHeader]?[key(context)] else {
-        throw Temp.error
+      try checkSameInstance(collectionView, cv)
+      let key = try makeKey(context)
+      guard let config = supplementaries[UICollectionElementKindSectionHeader]?[key] else {
+        throw Errors.NotRegistered(key: key)
       }
       let view = try objc_throws {
         cv.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: config.reuseId, for: ip)
@@ -57,7 +59,7 @@ extension Compound.CollectionView {
   public func hasFooter
     ( for context: Any
     ) -> Bool {
-    guard let key = try? key(context) else {return false}
+    guard let key = try? makeKey(context) else {return false}
     return supplementaries[UICollectionElementKindSectionFooter]?[key] != nil
   }
 
@@ -67,9 +69,10 @@ extension Compound.CollectionView {
     , for context: Any
     ) throws -> UICollectionReusableView {
     do {
-      guard cv === collectionView else {throw WrongViewInstance(view: cv)}
-      guard let config = try supplementaries[UICollectionElementKindSectionFooter]?[key(context)] else {
-        throw Temp.error
+      try checkSameInstance(collectionView, cv)
+      let key = try makeKey(context)
+      guard let config = supplementaries[UICollectionElementKindSectionFooter]?[key] else {
+        throw Errors.NotRegistered(key: key)
       }
       let view = try objc_throws {
         cv.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionFooter, withReuseIdentifier: config.reuseId, for: ip)
@@ -89,9 +92,10 @@ extension Compound.CollectionView {
     , for context: Any
     ) throws -> UICollectionReusableView {
     do {
-      guard cv === collectionView else {throw WrongViewInstance(view: cv)}
-      guard let config = try supplementaries[kind]?[key(context)] else {
-        throw Temp.error
+      try checkSameInstance(collectionView, cv)
+      let key = try makeKey(context)
+      guard let config = supplementaries[kind]?[key] else {
+        throw Errors.NotRegistered(key: key)
       }
       let view = try objc_throws {
         cv.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: config.reuseId, for: ip)
