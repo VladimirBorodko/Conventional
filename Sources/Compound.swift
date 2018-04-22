@@ -29,7 +29,7 @@ public enum Compound {
     internal weak var source: UIViewController?
     internal let segues: [Transition.Brief.Seguer.Key: Transition.Configure]
     internal let provider: Converter<UIViewController>
-    public let transiter: Converter<Transition>
+    public let converter: Converter<Transition>
   }
 
   public struct Window {

@@ -21,7 +21,7 @@ extension Compound.ViewController {
         }
       }
     }
-    transiter = .init(transits)
+    converter = .init(transits)
     provider = try .init(builder.providers.uniqueProviders())
   }
 
@@ -42,7 +42,7 @@ extension Compound.ViewController {
     , sender: Any?
     ) throws {
     do {
-      guard let sender = sender else { throw Temp.error }
+      guard let sender = sender else { return }
       if let manualSender = sender as? Transition.Brief.Seguer.Sender {
         return try manualSender.send(segue)
       }
@@ -68,7 +68,7 @@ extension Compound.ViewController {
     ) throws {
     do {
       guard let source = source else { throw Temp.error }
-      try transiter.convert(context).perform(source)
+      try converter.convert(context).perform(source)
     } catch let e {
       assertionFailure("\(e)")
       throw e
