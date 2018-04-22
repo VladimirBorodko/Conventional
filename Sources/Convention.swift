@@ -22,8 +22,12 @@ public protocol Convention {
   static var reuseIdentifier: String { get }
   static var transitionDuration: TimeInterval { get }
   static var transitionOptions: UIViewAnimationOptions { get }
-  static func extract<Container: UIViewController>() -> (Container) throws -> Complying
-  static func mock<Context>() -> (Complying, Context) throws -> Void
+
+  static func extract<Container: UIViewController>
+    () -> (Container) throws -> Complying
+
+  static func mock<Context>
+    () -> (Complying, Context) throws -> Void
 }
 
 extension Convention {
@@ -38,7 +42,10 @@ extension Convention {
   public static var reuseIdentifier: String { return String(describing: Complying.self) }
   public static var transitionDuration: TimeInterval { return 0.3 }
   public static var transitionOptions: UIViewAnimationOptions { return [.transitionCrossDissolve] }
-  public static func extract<Container: UIViewController>() -> (Container) throws -> Complying {
+
+  public static func extract<Container: UIViewController>
+    () -> (Container) throws -> Complying
+  {
     return { instantiated in
       if let complying = instantiated as? Complying { return complying }
       if let navigationController = instantiated as? UINavigationController
@@ -48,7 +55,8 @@ extension Convention {
       throw Errors.CastFailed(actual: type(of: instantiated), expected: Container.self)
     }
   }
-  public static func mock<Context>() -> (Complying, Context) throws -> Void {
-    return { _, _ in }
-  }
+
+  public static func mock<Context>
+    () -> (Complying, Context) throws -> Void
+  { return { _, _ in } }
 }

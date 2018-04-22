@@ -11,14 +11,14 @@ extension Transition.Builder.Source {
   
   public func make
     ( factory: @escaping Transit.Make
-    ) -> Transit {
-    return .init(source: self, make: factory)
-  }
+    ) -> Transit
+  { return .init(source: self, make: factory) }
 
   public func instantiateInitial
     ( storyboardName: String = Target.conventional.exclusiveStoryboardName
     , in bundle: Bundle = Target.conventional.bundle
-    ) -> Transit {
+    ) -> Transit
+  {
     return make {
       let controller = try objc_throws {
         UIStoryboard(name: storyboardName, bundle: bundle).instantiateInitialViewController()
@@ -31,7 +31,8 @@ extension Transition.Builder.Source {
     ( storyboardName: String = Target.conventional.collectiveStoryboardName
     , in bundle: Bundle = Target.conventional.bundle
     , storyboardId: String = Target.conventional.collectiveStoryboardIdentifier
-    ) -> Transit {
+    ) -> Transit
+  {
     return make {
       let controller = try objc_throws {
         UIStoryboard(name: storyboardName, bundle: bundle).instantiateViewController(withIdentifier: storyboardId)
@@ -45,7 +46,8 @@ extension Transition.Builder.Source where Built: UIViewController {
 
   public func storyboardSegue
     ( segueId: String = Target.conventional.storyboardSegueIdentifier
-    ) -> Transition.Builder<Built>.Source<Target, UIStoryboardSegue>.Configurator {
+    ) -> Transition.Builder<Built>.Source<Target, UIStoryboardSegue>.Configurator
+  {
     return .init(built: builder.built) { _, configure in
       var builder = self.builder
       let extract = self.extract
@@ -62,13 +64,13 @@ extension Transition.Builder.Source where Built: UIViewController {
 
   public func embeddSegue
     ( segueId: String = Target.conventional.embeddSegueIdentifier
-    ) -> Transition.Builder<Built>.Source<Target, UIStoryboardSegue>.Configurator {
-    return storyboardSegue(segueId: segueId)
-  }
+    ) -> Transition.Builder<Built>.Source<Target, UIStoryboardSegue>.Configurator
+  { return storyboardSegue(segueId: segueId) }
 
   public func manualSegue
     ( segueId: String = Target.conventional.storyboardSegueIdentifier
-    ) -> Configurator {
+    ) -> Configurator
+  {
     return .init(built: builder.built) { contextType, configure in
       var builder = self.builder
       let extract = self.extract

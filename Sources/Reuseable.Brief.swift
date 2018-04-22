@@ -13,7 +13,8 @@ extension Reuseable.Brief {
     ( configurator: Reuseable.Builder<T>.Registrator<View>.Configurator
     , contextType: Any.Type
     , configure: @escaping Reuseable.Configure
-    ) {
+    )
+  {
     self.viewType = View.self
     self.source = configurator.source
     self.reuseId = configurator.reuseId
@@ -26,7 +27,8 @@ extension Array where Element == Reuseable.Brief {
 
   internal func registerUniqueReuseIds
     ( _ register: (Reuseable.Brief) throws -> Void
-    ) throws {
+    ) throws
+  {
     _ = try self.reduce(into: [String:Void]()) { dict, brief in
       guard dict[brief.reuseId] == nil else { throw Errors.NotUnique(key: brief.reuseId) }
       try register(brief)
@@ -34,7 +36,9 @@ extension Array where Element == Reuseable.Brief {
     }
   }
 
-  internal func uniqueModelContexts() throws -> [String: Reuseable] {
+  internal func uniqueModelContexts
+    () throws -> [String: Reuseable]
+  {
     return try self.reduce(into: [:]) { dict, brief in
       let key = String(reflecting: brief.contextType)
       guard dict[key] == nil else { throw Errors.NotUnique(key: key) }
@@ -47,7 +51,8 @@ extension UITableView {
 
   internal func registerCell
     ( brief: Reuseable.Brief
-    ) throws {
+    ) throws
+  {
     switch brief.source {
     case let .aClass(aClass):
       try objc_throws { self.register(aClass, forCellReuseIdentifier: brief.reuseId) }
@@ -62,7 +67,8 @@ extension UITableView {
 
   internal func registerView
     ( brief: Reuseable.Brief
-    ) throws {
+    ) throws
+  {
     switch brief.source {
     case let .aClass(aClass):
       try objc_throws { self.register(aClass, forHeaderFooterViewReuseIdentifier: brief.reuseId) }
@@ -80,7 +86,8 @@ extension UICollectionView {
 
   internal func registerCell
     ( brief: Reuseable.Brief
-    ) throws {
+    ) throws
+  {
     switch brief.source {
     case let .aClass(aClass):
       try objc_throws { self.register(aClass, forCellWithReuseIdentifier: brief.reuseId) }
@@ -96,7 +103,8 @@ extension UICollectionView {
   internal func registerView
     ( kind: String
     , brief: Reuseable.Brief
-    ) throws {
+    ) throws
+  {
     switch brief.source {
     case let .aClass(aClass):
       try objc_throws { self.register(aClass, forSupplementaryViewOfKind: kind, withReuseIdentifier: brief.reuseId) }

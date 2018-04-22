@@ -16,20 +16,19 @@ extension Transition.Brief.Seguer.Key: Hashable {
   internal static func ==
     (lhs: Transition.Brief.Seguer.Key
     , rhs: Transition.Brief.Seguer.Key
-    ) -> Bool {
-    return lhs.id == rhs.id && lhs.destination === rhs.destination
-  }
+    ) -> Bool
+  { return lhs.id == rhs.id && lhs.destination === rhs.destination }
 
   internal init
-    ( _ brief: Transition.Brief.Seguer
-    ) {
+    ( _ brief: Transition.Brief.Seguer )
+  {
     self.id = brief.segueId
     self.destination = brief.destinationType
   }
 
   internal init
-    ( _ segue: UIStoryboardSegue
-    ) {
+    ( _ segue: UIStoryboardSegue )
+  {
     self.id = segue.identifier ?? ""
     self.destination = type(of: segue.destination)
   }

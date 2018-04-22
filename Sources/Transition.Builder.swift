@@ -10,24 +10,20 @@ import UIKit
 extension Transition.Builder {
   
   internal init
-    ( _ built: Built
-    ) {
-    self.built = built
-  }
+    ( _ built: Built )
+  { self.built = built }
 
   public func register<Target: UIViewController>
     ( _: Target.Type
-    ) -> Source<Target, UIViewController> {
-    return register(Target.self, containedIn: UIViewController.self)
-  }
+    ) -> Source<Target, UIViewController>
+  { return register(Target.self, containedIn: UIViewController.self) }
 
   public func register<Target: UIViewController, Container: UIViewController>
     ( _: Target.Type
     , containedIn _: Container.Type
     , extract: @escaping Source<Target, Container>.Extract = Target.conventional.extract()
-    ) -> Source<Target, Container> {
-    return .init(builder: self, extract: extract)
-  }
+    ) -> Source<Target, Container>
+  { return .init(builder: self, extract: extract) }
 }
 
 extension Transition.Builder where Built: ConventionComplying {
@@ -35,7 +31,8 @@ extension Transition.Builder where Built: ConventionComplying {
   public func mock<Context>
     ( for _: Context.Type
     , perform: @escaping (Built, Context) throws -> Void = Built.conventional.mock()
-    ) -> Transition.Builder<Built> {
+    ) -> Transition.Builder<Built>
+  {
     var builder = self
     let brief = Transition.Brief.Transiter(contextType: Context.self) { built, context in
       let built = try cast(built, Built.self)
@@ -49,7 +46,9 @@ extension Transition.Builder where Built: ConventionComplying {
 
 extension Transition.Builder where Built: UIViewController {
 
-  public func build() throws -> Configuration.ViewController {
+  public func build
+    () throws -> Configuration.ViewController
+  {
     do {
       return try .init(self)
     } catch let e {
@@ -62,7 +61,8 @@ extension Transition.Builder where Built: UIViewController {
     ( _: Target.Type
     , storyboardName: String = Target.conventional.exclusiveStoryboardName
     , in bundle: Bundle = Target.conventional.bundle
-    ) -> Transition.Builder<Built> {
+    ) -> Transition.Builder<Built>
+  {
     return register(Target.self)
       .instantiateInitial(storyboardName: storyboardName, in: bundle)
       .show()
@@ -74,7 +74,8 @@ extension Transition.Builder where Built: UIViewController {
     , storyboardName: String = Target.conventional.exclusiveStoryboardName
     , in bundle: Bundle = Target.conventional.bundle
     , storyboardId: String = Target.conventional.collectiveStoryboardIdentifier
-    ) -> Transition.Builder<Built> {
+    ) -> Transition.Builder<Built>
+  {
     return register(Target.self)
       .instantiate(storyboardName: storyboardName, in: bundle, storyboardId: storyboardId)
       .show()
@@ -85,7 +86,8 @@ extension Transition.Builder where Built: UIViewController {
     ( _: Target.Type
     , _ keyPath: ReferenceWritableKeyPath<Built, Target?>
     , segueId: String = Target.conventional.embeddSegueIdentifier
-    ) -> Transition.Builder<Built> {
+    ) -> Transition.Builder<Built>
+  {
     return register(Target.self)
       .embeddSegue(segueId: segueId)
       .customConfigure { built, target, _ in built[keyPath: keyPath] = target }
@@ -94,7 +96,8 @@ extension Transition.Builder where Built: UIViewController {
   public func segue<Target: UIViewController & ConventionalConfigurable>
     ( _: Target.Type
     , segueId: String = Target.conventional.storyboardSegueIdentifier
-    ) -> Transition.Builder<Built> {
+    ) -> Transition.Builder<Built>
+  {
     return register(Target.self)
       .manualSegue(segueId: segueId)
       .configure(with: Target.configure(context:))
@@ -103,7 +106,9 @@ extension Transition.Builder where Built: UIViewController {
 
 extension Transition.Builder where Built: UIWindow {
   
-  public func build() throws -> Configuration.Window {
+  public func build
+    () throws -> Configuration.Window
+  {
     do {
       return try .init(self)
     } catch let e {

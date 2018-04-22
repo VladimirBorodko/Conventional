@@ -11,7 +11,8 @@ extension Configuration.Window {
 
   internal init<W: UIWindow>
     ( _ builder: Transition.Builder<W>
-    ) throws {
+    ) throws
+  {
     source = builder.built
     sourceType = type(of: builder.built)
     let transits = try builder.transiters.uniqueTransitions().mapValues { configure in
@@ -26,7 +27,8 @@ extension Configuration.Window {
 
   public func perform
     ( _ transition: Transition
-    ) throws {
+    ) throws
+  {
     do {
       let source = try unwrap(self.source)
       try transition.perform(source)
@@ -38,7 +40,8 @@ extension Configuration.Window {
 
   public func transit
     ( _ context: Any
-    ) throws {
+    ) throws
+  {
     do {
       let source = try unwrap(self.source)
       try converter.convert(context).perform(source)

@@ -12,8 +12,7 @@ public struct Converter<Output> {
   private let converts: [String: Convert]
 
   internal init
-    ( _ converts: [String: Convert]
-    )
+    ( _ converts: [String: Convert] )
   { self.converts = converts }
 
   public func canConvert<Input>
@@ -39,14 +38,17 @@ public struct Converter<Output> {
 
     private var converts: [String: Convert] = [:]
 
-    public init() {}
+    public init() { }
 
-    public func build() -> Converter<Output> { return .init(converts) }
+    public func build
+      () -> Converter<Output>
+    { return .init(converts) }
 
     public func append<Input>
       ( _: Input.Type
       , convert: @escaping (Input) throws -> Output
-      ) throws -> Builder {
+      ) throws -> Builder
+    {
       let key = String(reflecting: Input.self)
       guard converts[key] == nil else { throw Errors.NotUnique(key: key) }
       converts[key] = {

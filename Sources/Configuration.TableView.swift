@@ -13,7 +13,8 @@ extension Configuration.TableView {
     ( from tv: UITableView
     , at ip: IndexPath
     , for context: Any
-    ) throws -> UITableViewCell {
+    ) throws -> UITableViewCell
+  {
     do {
       try checkSameInstance(tableView, tv)
       let key = try makeKey(context)
@@ -31,7 +32,8 @@ extension Configuration.TableView {
     ( from tv: UITableView
     , at ip: IndexPath
     , for context: Any
-    ) throws -> UITableViewHeaderFooterView? {
+    ) throws -> UITableViewHeaderFooterView?
+  {
     do {
       try checkSameInstance(tableView, tv)
       guard case let config?? = try? headers[makeKey(context)] else { return nil }
@@ -48,7 +50,8 @@ extension Configuration.TableView {
     ( from tv: UITableView
     , at ip: IndexPath
     , for context: Any
-    ) throws -> UITableViewHeaderFooterView? {
+    ) throws -> UITableViewHeaderFooterView?
+  {
     do {
       try checkSameInstance(tableView, tv)
       guard case let config?? = try? footers[makeKey(context)] else { return nil }
@@ -63,7 +66,8 @@ extension Configuration.TableView {
 
   internal init
     ( _ builder: Reuseable.Builder<UITableView>
-    ) throws {
+    ) throws
+  {
     self.tableView = builder.built
     try builder.cells.registerUniqueReuseIds(builder.built.registerCell(brief:))
     cells = try builder.cells.uniqueModelContexts()

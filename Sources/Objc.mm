@@ -15,7 +15,9 @@
 
 @implementation Objc
 
-+ (BOOL)performOrThrow:(void(^)())tryBlock error:(__autoreleasing NSError **)error {
++ (BOOL)performOrThrow:(void(^)())tryBlock
+                 error:(__autoreleasing NSError **)error
+{
   try {
     @try { tryBlock(); return YES; }
     @catch (NSException *exception) {

@@ -11,7 +11,8 @@ extension Configuration.ViewController {
 
   internal init<VC: UIViewController>
     ( _ builder: Transition.Builder<VC>
-    ) throws {
+    ) throws
+  {
     source = builder.built
     sourceType = type(of: builder.built)
     segues = try builder.seguers.uniqueSegues()
@@ -28,7 +29,8 @@ extension Configuration.ViewController {
 
   public func perform
     ( _ transition: Transition
-    ) throws {
+    ) throws
+  {
     do {
       let source = try unwrap(self.source)
       try transition.perform(source)
@@ -41,7 +43,8 @@ extension Configuration.ViewController {
   public func prepare
     ( for segue: UIStoryboardSegue
     , sender: Any?
-    ) throws {
+    ) throws
+  {
     do {
       guard let sender = sender else { return }
       if let manualSender = sender as? Transition.Brief.Seguer.Sender {
@@ -55,7 +58,10 @@ extension Configuration.ViewController {
     }
   }
 
-  public func provide(for context: Any) throws -> UIViewController {
+  public func provide
+    ( for context: Any
+    ) throws -> UIViewController
+  {
     do {
       return try provider.convert(context)
     } catch let e {
@@ -66,7 +72,8 @@ extension Configuration.ViewController {
 
   public func transit
     ( _ context: Any
-    ) throws {
+    ) throws
+  {
     do {
       let source = try unwrap(self.source)
       try converter.convert(context).perform(source)

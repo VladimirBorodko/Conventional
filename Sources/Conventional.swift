@@ -11,16 +11,16 @@ import UIKit
 public struct Conventional<Complying: AnyObject>: Convention {
 
   public let complying: Complying
+
   public init
-    ( _ complying: Complying
-    ) {
-    self.complying = complying
-  }
+    ( _ complying: Complying )
+  { self.complying = complying }
 }
 
 public protocol ConventionComplying {
 
   associatedtype Complying: AnyObject
+
   static var conventional: Conventional<Complying>.Type { get set }
   var conventional: Conventional<Complying> { get set }
 }
@@ -62,6 +62,8 @@ extension Conventional where Complying: UITableView {
 }
 
 public protocol ConventionalConfigurable {
+
   associatedtype Context
+
   func configure(context: Context)
 }

@@ -13,7 +13,8 @@ extension Configuration.CollectionView {
     ( from cv: UICollectionView
     , at ip: IndexPath
     , for context: Any
-    ) throws -> UICollectionViewCell {
+    ) throws -> UICollectionViewCell
+  {
     do {
       try checkSameInstance(collectionView, cv)
       let key = try makeKey(context)
@@ -29,7 +30,8 @@ extension Configuration.CollectionView {
 
   public func hasHeader
     ( for context: Any
-    ) -> Bool {
+    ) -> Bool
+  {
     guard let key = try? makeKey(context) else {return false}
     return supplementaries[UICollectionElementKindSectionHeader]?[key] != nil
   }
@@ -38,7 +40,8 @@ extension Configuration.CollectionView {
     ( from cv: UICollectionView
     , at ip: IndexPath
     , for context: Any
-    ) throws -> UICollectionReusableView {
+    ) throws -> UICollectionReusableView
+  {
     do {
       try checkSameInstance(collectionView, cv)
       let key = try makeKey(context)
@@ -58,7 +61,8 @@ extension Configuration.CollectionView {
 
   public func hasFooter
     ( for context: Any
-    ) -> Bool {
+    ) -> Bool
+  {
     guard let key = try? makeKey(context) else {return false}
     return supplementaries[UICollectionElementKindSectionFooter]?[key] != nil
   }
@@ -67,7 +71,8 @@ extension Configuration.CollectionView {
     ( from cv: UICollectionView
     , at ip: IndexPath
     , for context: Any
-    ) throws -> UICollectionReusableView {
+    ) throws -> UICollectionReusableView
+  {
     do {
       try checkSameInstance(collectionView, cv)
       let key = try makeKey(context)
@@ -90,7 +95,8 @@ extension Configuration.CollectionView {
     , of kind: String
     , at ip: IndexPath
     , for context: Any
-    ) throws -> UICollectionReusableView {
+    ) throws -> UICollectionReusableView
+  {
     do {
       try checkSameInstance(collectionView, cv)
       let key = try makeKey(context)
@@ -110,7 +116,8 @@ extension Configuration.CollectionView {
 
   internal init
     ( _ builder: Reuseable.Builder<UICollectionView>
-    ) throws {
+    ) throws
+  {
     self.collectionView = builder.built
     try builder.cells.registerUniqueReuseIds(builder.built.registerCell(brief:))
     cells = try builder.cells.uniqueModelContexts()
