@@ -17,8 +17,8 @@ extension Transition.Builder {
 
   public func register<Target: UIViewController>
     ( _: Target.Type
-    ) -> Source<Target, Target> {
-    return .init(builder: self, extract: {$0})
+    ) -> Source<Target, UIViewController> {
+    return register(Target.self, containedIn: UIViewController.self)
   }
 
   public func register<Target: UIViewController, Container: UIViewController>
@@ -56,6 +56,48 @@ extension Transition.Builder where Built: UIViewController {
       assertionFailure("\(e)")
       throw e
     }
+  }
+
+  public func showInitial<Target: UIViewController & ConventionalConfigurable>
+    ( _: Target.Type
+    , storyboardName: String = Target.conventional.exclusiveStoryboardName
+    , in bundle: Bundle = Target.conventional.bundle
+    ) -> Transition.Builder<Built> {
+    return register(Target.self)
+      .instantiateInitial(storyboardName: storyboardName, in: bundle)
+      .show()
+      .configure(with: Target.configure(context:))
+  }
+
+  public func showInstantiated<Target: UIViewController & ConventionalConfigurable>
+    ( _: Target.Type
+    , storyboardName: String = Target.conventional.exclusiveStoryboardName
+    , in bundle: Bundle = Target.conventional.bundle
+    , storyboardId: String = Target.conventional.collectiveStoryboardIdentifier
+    ) -> Transition.Builder<Built> {
+    return register(Target.self)
+      .instantiate(storyboardName: storyboardName, in: bundle, storyboardId: storyboardId)
+      .show()
+      .configure(with: Target.configure(context:))
+  }
+
+  public func embedd<Target: UIViewController>
+    ( _: Target.Type
+    , _ keyPath: ReferenceWritableKeyPath<Built, Target?>
+    , segueId: String = Target.conventional.embeddSegueIdentifier
+    ) -> Transition.Builder<Built> {
+    return register(Target.self)
+      .embeddSegue(segueId: segueId)
+      .customConfigure { built, target, _ in built[keyPath: keyPath] = target }
+  }
+
+  public func segue<Target: UIViewController & ConventionalConfigurable>
+    ( _: Target.Type
+    , segueId: String = Target.conventional.storyboardSegueIdentifier
+    ) -> Transition.Builder<Built> {
+    return register(Target.self)
+      .manualSegue(segueId: segueId)
+      .configure(with: Target.configure(context:))
   }
 }
 

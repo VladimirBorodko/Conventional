@@ -46,7 +46,7 @@ extension Compound.ViewController {
       if let manualSender = sender as? Transition.Brief.Seguer.Sender {
         return try manualSender.send(segue)
       }
-      guard let seguer = segues[.init(segue)] else { throw Temp.error }
+      guard let seguer = segues[.init(segue)] else { return }
       try seguer(segue, sender)
     } catch let e {
       assertionFailure("\(e)")
@@ -57,6 +57,18 @@ extension Compound.ViewController {
   public func provide(for context: Any) throws -> UIViewController {
     do {
       return try provider.convert(context)
+    } catch let e {
+      assertionFailure("\(e)")
+      throw e
+    }
+  }
+
+  public func transit
+    ( _ context: Any
+    ) throws {
+    do {
+      guard let source = source else { throw Temp.error }
+      try transiter.convert(context).perform(source)
     } catch let e {
       assertionFailure("\(e)")
       throw e

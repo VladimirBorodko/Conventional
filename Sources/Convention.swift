@@ -20,6 +20,8 @@ public protocol Convention {
   static var nibName: String { get }
   static var bundle: Bundle { get }
   static var reuseIdentifier: String { get }
+  static var transitionDuration: TimeInterval { get }
+  static var transitionOptions: UIViewAnimationOptions { get }
   static func extract<Container: UIViewController>() -> (Container) throws -> Complying
   static func mock<Context>() -> (Complying, Context) throws -> Void
 }
@@ -34,6 +36,8 @@ extension Convention {
   public static var nibName: String { return String(describing: Complying.self) }
   public static var bundle: Bundle { return Bundle(for: Complying.self) }
   public static var reuseIdentifier: String { return String(describing: Complying.self) }
+  public static var transitionDuration: TimeInterval { return 0.3 }
+  public static var transitionOptions: UIViewAnimationOptions { return [.transitionCrossDissolve] }
   public static func extract<Container: UIViewController>() -> (Container) throws -> Complying {
     return { instantiated in
       if let complying = instantiated as? Complying { return complying }
@@ -48,4 +52,3 @@ extension Convention {
     return { _, _ in }
   }
 }
-

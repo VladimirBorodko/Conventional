@@ -38,4 +38,8 @@ extension Reuseable.Builder.Registrator.Configurator {
       closure(view)(context)
     }
   }
+
+  public func noContext() -> Reuseable.Builder<Built> {
+    return customConfigure(View.self) { _, _ in }
+  }
 }

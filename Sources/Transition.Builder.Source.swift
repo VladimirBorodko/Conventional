@@ -16,7 +16,7 @@ extension Transition.Builder.Source {
   }
 
   public func instantiateInitial
-    ( from storyboardName: String = Target.conventional.exclusiveStoryboardName
+    ( storyboardName: String = Target.conventional.exclusiveStoryboardName
     , in bundle: Bundle = Target.conventional.bundle
     ) -> Transit {
     return make {
@@ -31,13 +31,13 @@ extension Transition.Builder.Source {
   }
 
   public func instantiate
-    ( from storyboardName: String = Target.conventional.collectiveStoryboardName
+    ( storyboardName: String = Target.conventional.collectiveStoryboardName
     , in bundle: Bundle = Target.conventional.bundle
-    , by id: String = Target.conventional.collectiveStoryboardIdentifier
+    , storyboardId: String = Target.conventional.collectiveStoryboardIdentifier
     ) -> Transit {
     return make {
       let controller = try objc_throws {
-        UIStoryboard(name: storyboardName, bundle: bundle).instantiateViewController(withIdentifier: id)
+        UIStoryboard(name: storyboardName, bundle: bundle).instantiateViewController(withIdentifier: storyboardId)
       }
       guard let container = controller as? Container else {
         throw Temp.error
@@ -50,12 +50,12 @@ extension Transition.Builder.Source {
 extension Transition.Builder.Source where Built: UIViewController {
 
   public func storyboardSegue
-    ( with id: String = Target.conventional.storyboardSegueIdentifier
+    ( segueId: String = Target.conventional.storyboardSegueIdentifier
     ) -> Transition.Builder<Built>.Source<Target, UIStoryboardSegue>.Configurator {
     return .init(built: builder.built) { _, configure in
       var builder = self.builder
       let extract = self.extract
-      let brief = Transition.Brief.Seguer(destinationType: Container.self, segueId: id) { segue, sender in
+      let brief = Transition.Brief.Seguer(destinationType: Container.self, segueId: segueId) { segue, sender in
         guard let segue = segue as? UIStoryboardSegue else { throw Temp.error }
         guard let container = segue.destination as? Container else { throw Temp.error }
         let target = try extract(container)
@@ -67,13 +67,13 @@ extension Transition.Builder.Source where Built: UIViewController {
   }
 
   public func embeddSegue
-    ( with id: String = Target.conventional.embeddSegueIdentifier
+    ( segueId: String = Target.conventional.embeddSegueIdentifier
     ) -> Transition.Builder<Built>.Source<Target, UIStoryboardSegue>.Configurator {
-    return storyboardSegue(with: id)
+    return storyboardSegue(segueId: segueId)
   }
 
   public func manualSegue
-    ( id: String = Target.conventional.storyboardSegueIdentifier
+    ( segueId: String = Target.conventional.storyboardSegueIdentifier
     ) -> Configurator {
     return .init(built: builder.built) { contextType, configure in
       var builder = self.builder
@@ -86,7 +86,7 @@ extension Transition.Builder.Source where Built: UIViewController {
           try configure(target, context)
         }
         try objc_throws {
-          controller.performSegue(withIdentifier: id, sender: sender)
+          controller.performSegue(withIdentifier: segueId, sender: sender)
         }
       }
       builder.transiters.append(brief)

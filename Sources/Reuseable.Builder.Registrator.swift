@@ -10,29 +10,29 @@ import UIKit
 extension Reuseable.Builder.Registrator {
 
   public func byClass
-    ( with reuseId: String = View.conventional.reuseIdentifier
+    ( reuseId: String = View.conventional.reuseIdentifier
     ) -> Configurator {
     return .init(registrator: self, source: .aClass(View.self), reuseId: reuseId)
   }
 
   public func fromNib
-    ( name: String = View.conventional.nibName
+    ( reuseId: String = View.conventional.reuseIdentifier
+    , name: String = View.conventional.nibName
     , bundle: Bundle = View.conventional.bundle
-    , with reuseId: String = View.conventional.reuseIdentifier
     ) -> Configurator {
     return .init(registrator: self, source: .assetNib(name, bundle), reuseId: reuseId)
   }
 
   public func fromNib
-    ( data: Data
+    ( reuseId: String = View.conventional.reuseIdentifier
+    , data: Data
     , bundle: Bundle = View.conventional.bundle
-    , with reuseId: String = View.conventional.reuseIdentifier
     ) -> Configurator {
     return .init(registrator: self, source: .dataNib(data, bundle), reuseId: reuseId)
   }
 
   public func inStoryboard
-    ( with reuseId: String = View.conventional.reuseIdentifier
+    ( reuseId: String = View.conventional.reuseIdentifier
     ) -> Configurator {
     return .init(registrator: self, source: .storyboard, reuseId: reuseId)
   }

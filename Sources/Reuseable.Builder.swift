@@ -58,13 +58,108 @@ extension Reuseable.Builder where Built == UICollectionView {
 
   public func supplementary<View: UICollectionReusableView>
     ( _: View.Type
-    , of kind: String
+    , kind: String
     ) -> Registrator<View> {
     return .init { brief in
       var builder = self
       builder.supplementaries[kind] = (builder.supplementaries[kind] ?? []) + [brief]
       return builder
     }
+  }
+
+  public func cellFromNib<View: UICollectionViewCell & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    , name: String = View.conventional.nibName
+    , bundle: Bundle = View.conventional.bundle
+    ) -> Reuseable.Builder<Built> {
+    return cell(View.self).fromNib(reuseId: reuseId, name: name, bundle: bundle).configure(with: View.configure(context:))
+  }
+
+  public func cellByClass<View: UICollectionViewCell & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    ) -> Reuseable.Builder<Built> {
+    return cell(View.self).byClass(reuseId: reuseId).configure(with: View.configure(context:))
+  }
+
+  public func cellInStoryboard<View: UICollectionViewCell & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    ) -> Reuseable.Builder<Built> {
+    return cell(View.self).inStoryboard(reuseId: reuseId).configure(with: View.configure(context:))
+  }
+
+  public func headerFromNib<View: UICollectionReusableView & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    , name: String = View.conventional.nibName
+    , bundle: Bundle = View.conventional.bundle
+    ) -> Reuseable.Builder<Built> {
+    return header(View.self).fromNib(reuseId: reuseId, name: name, bundle: bundle).configure(with: View.configure(context:))
+  }
+
+  public func headerByClass<View: UICollectionReusableView & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    ) -> Reuseable.Builder<Built> {
+    return header(View.self).byClass(reuseId: reuseId).configure(with: View.configure(context:))
+  }
+
+  public func headerInStoryboard<View: UICollectionReusableView & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    ) -> Reuseable.Builder<Built> {
+    return header(View.self).inStoryboard(reuseId: reuseId).configure(with: View.configure(context:))
+  }
+
+  public func footerFromNib<View: UICollectionReusableView & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    , name: String = View.conventional.nibName
+    , bundle: Bundle = View.conventional.bundle
+    ) -> Reuseable.Builder<Built> {
+    return footer(View.self).fromNib(reuseId: reuseId, name: name, bundle: bundle).configure(with: View.configure(context:))
+  }
+
+  public func footerByClass<View: UICollectionReusableView & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    ) -> Reuseable.Builder<Built> {
+    return footer(View.self).byClass(reuseId: reuseId).configure(with: View.configure(context:))
+  }
+
+  public func footerInStoryboard<View: UICollectionReusableView & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    ) -> Reuseable.Builder<Built> {
+    return footer(View.self).inStoryboard(reuseId: reuseId).configure(with: View.configure(context:))
+  }
+
+  public func supplementaryFromNib<View: UICollectionReusableView & ConventionalConfigurable>
+    ( _: View.Type
+    , kind: String
+    , reuseId: String = View.conventional.reuseIdentifier
+    , name: String = View.conventional.nibName
+    , bundle: Bundle = View.conventional.bundle
+    ) -> Reuseable.Builder<Built> {
+    return supplementary(View.self, kind: kind).fromNib(reuseId: reuseId, name: name, bundle: bundle).configure(with: View.configure(context:))
+  }
+
+  public func supplementaryByClass<View: UICollectionReusableView & ConventionalConfigurable>
+    ( _: View.Type
+    , kind: String
+    , reuseId: String = View.conventional.reuseIdentifier
+    ) -> Reuseable.Builder<Built> {
+    return supplementary(View.self, kind: kind).byClass(reuseId: reuseId).configure(with: View.configure(context:))
+  }
+
+  public func supplementaryInStoryboard<View: UICollectionReusableView & ConventionalConfigurable>
+    ( _: View.Type
+    , kind: String
+    , reuseId: String = View.conventional.reuseIdentifier
+    ) -> Reuseable.Builder<Built> {
+    return supplementary(View.self, kind: kind).inStoryboard(reuseId: reuseId).configure(with: View.configure(context:))
   }
 
   public func build() throws -> Compound.CollectionView {
@@ -107,6 +202,75 @@ extension Reuseable.Builder where Built == UITableView {
       builder.supplementaries[UICollectionElementKindSectionFooter] = builder.footers + [brief]
       return builder
     }
+  }
+
+  public func cellFromNib<View: UITableViewCell & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    , name: String = View.conventional.nibName
+    , bundle: Bundle = View.conventional.bundle
+    ) -> Reuseable.Builder<Built> {
+    return cell(View.self).fromNib(reuseId: reuseId, name: name, bundle: bundle).configure(with: View.configure(context:))
+  }
+
+  public func cellByClass<View: UITableViewCell & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    ) -> Reuseable.Builder<Built> {
+    return cell(View.self).byClass(reuseId: reuseId).configure(with: View.configure(context:))
+  }
+
+  public func cellInStoryboard<View: UITableViewCell & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    ) -> Reuseable.Builder<Built> {
+    return cell(View.self).inStoryboard(reuseId: reuseId).configure(with: View.configure(context:))
+  }
+
+  public func headerFromNib<View: UITableViewHeaderFooterView & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    , name: String = View.conventional.nibName
+    , bundle: Bundle = View.conventional.bundle
+    ) -> Reuseable.Builder<Built> {
+    return header(View.self).fromNib(reuseId: reuseId, name: name, bundle: bundle).configure(with: View.configure(context:))
+  }
+
+  public func headerByClass<View: UITableViewHeaderFooterView & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    ) -> Reuseable.Builder<Built> {
+    return header(View.self).byClass(reuseId: reuseId).configure(with: View.configure(context:))
+  }
+
+  public func headerInStoryboard<View: UITableViewHeaderFooterView & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    ) -> Reuseable.Builder<Built> {
+    return header(View.self).inStoryboard(reuseId: reuseId).configure(with: View.configure(context:))
+  }
+
+  public func footerFromNib<View: UITableViewHeaderFooterView & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    , name: String = View.conventional.nibName
+    , bundle: Bundle = View.conventional.bundle
+    ) -> Reuseable.Builder<Built> {
+    return footer(View.self).fromNib(reuseId: reuseId, name: name, bundle: bundle).configure(with: View.configure(context:))
+  }
+
+  public func footerByClass<View: UITableViewHeaderFooterView & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    ) -> Reuseable.Builder<Built> {
+    return footer(View.self).byClass(reuseId: reuseId).configure(with: View.configure(context:))
+  }
+
+  public func footerInStoryboard<View: UITableViewHeaderFooterView & ConventionalConfigurable>
+    ( _: View.Type
+    , reuseId: String = View.conventional.reuseIdentifier
+    ) -> Reuseable.Builder<Built> {
+    return footer(View.self).inStoryboard(reuseId: reuseId).configure(with: View.configure(context:))
   }
 
   public func build() throws -> Compound.TableView {

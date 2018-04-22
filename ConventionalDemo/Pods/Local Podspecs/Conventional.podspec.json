@@ -1,6 +1,6 @@
 {
   "name": "Conventional",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "license": {
     "type": "MIT",
     "file": "LICENSE.md"
@@ -15,11 +15,15 @@
   },
   "module_name": "Conventional",
   "platforms": {
-    "ios": "11.0"
+    "ios": "10.0",
+    "tvos": "10.0"
   },
   "source_files": "Sources",
   "frameworks": "SystemConfiguration",
   "ios": {
+    "frameworks": "UIKit"
+  },
+  "tvos": {
     "frameworks": "UIKit"
   }
 }

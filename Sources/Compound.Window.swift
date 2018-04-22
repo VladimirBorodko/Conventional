@@ -34,4 +34,16 @@ extension Compound.Window {
       throw e
     }
   }
+
+  public func transit
+    ( _ context: Any
+    ) throws {
+    do {
+      guard let source = source else { throw Temp.error }
+      try transiter.convert(context).perform(source)
+    } catch let e {
+      assertionFailure("\(e)")
+      throw e
+    }
+  }
 }

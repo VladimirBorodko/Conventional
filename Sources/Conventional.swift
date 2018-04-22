@@ -60,3 +60,8 @@ extension Conventional where Complying: UITableView {
   
   public var compound: Reuseable.Builder<Complying> { return .init(complying) }
 }
+
+public protocol ConventionalConfigurable {
+  associatedtype Context
+  func configure(context: Context)
+}

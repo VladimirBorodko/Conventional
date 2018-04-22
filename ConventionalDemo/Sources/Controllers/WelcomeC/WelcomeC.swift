@@ -7,16 +7,50 @@
 //
 
 import UIKit
-import RxSwift
-import RxCocoa
+import Conventional
 
-class WelcomeC: UIViewController {
+protocol CellModel { }
+
+struct StringVM: CellModel {
+  let text: String
+}
+
+struct IntVM: CellModel {
+  let number: Int
+}
+
+class StringCellV: UITableViewCell {
+  func configure(stringVM: StringVM) {
+    textLabel?.text = stringVM.text
+  }
+}
+
+class IntCellV: UITableViewCell {
+  func configure(intVM: IntVM) {
+    textLabel?.text = String(intVM.number)
+  }
+}
+
+class WelcomeC: UIViewController, UITableViewDataSource {
 
   @IBOutlet weak var tableView: UITableView!
 
+  var compound: Compound.TableView!
+  var cellModels: [CellModel] = [StringVM(text: "1"),StringVM(text: "2"), IntVM(number: 3)]
+
   override func viewDidLoad() {
     super.viewDidLoad()
+    compound = try? tableView.conventional.compound
+      .cell(StringCellV.self).byClass().configure(with: StringCellV.configure(stringVM:))
+      .cell(IntCellV.self).byClass().configure(with: IntCellV.configure(intVM:))
+      .build()
   }
 
-  override func prepare(for segue: UIStoryboardSegue, sender: Any?) { }
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    return try! compound.cell(from: tableView, at: indexPath, for: cellModels[indexPath.row])
+  }
+
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return cellModels.count
+  }
 }

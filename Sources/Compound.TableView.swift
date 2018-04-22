@@ -15,9 +15,8 @@ extension Compound.TableView {
     , for context: Any
     ) throws -> UITableViewCell {
     do {
-      let contextType = type(of: context)
       guard tv === tableView else { throw WrongViewInstance(view: tv) }
-      guard let configurator = cells[String(reflecting: contextType)] else { throw NotRegisteredContext(type: contextType) }
+      guard let configurator = try cells[key(context)] else { throw Temp.error }
       let cell = try objc_throws { tv.dequeueReusableCell(withIdentifier: configurator.reuseId, for: ip) }
       try configurator.configure(cell, context)
       return cell
@@ -33,9 +32,8 @@ extension Compound.TableView {
     , for context: Any
     ) throws -> UITableViewHeaderFooterView? {
     do {
-      let contextType = type(of: context)
       guard tv === tableView else {throw WrongViewInstance(view: tv)}
-      guard let config = headers[String(reflecting: contextType)] else { return nil }
+      guard case let config?? = try? headers[key(context)] else { return nil }
       let view = try objc_throws { tv.dequeueReusableHeaderFooterView(withIdentifier: config.reuseId) }
       try view.map { try config.configure($0, context) }
       return view
@@ -51,9 +49,8 @@ extension Compound.TableView {
     , for context: Any
     ) throws -> UITableViewHeaderFooterView? {
     do {
-      let contextType = type(of: context)
       guard tv === tableView else {throw WrongViewInstance(view: tv)}
-      guard let config = footers[String(reflecting: contextType)] else { return nil }
+      guard case let config?? = try? footers[key(context)] else { return nil }
       let view = try objc_throws { tv.dequeueReusableHeaderFooterView(withIdentifier: config.reuseId) }
       try view.map { try config.configure($0, context) }
       return view

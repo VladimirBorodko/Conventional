@@ -37,6 +37,9 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="On0-4E-MUV">
                                 <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="MTR-cL-3sj" id="W0g-WK-buy"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -51,6 +54,9 @@
                     <navigationItem key="navigationItem" title="Welcome" id="kmV-46-Wz5">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="ias-FX-QBs"/>
                     </navigationItem>
+                    <connections>
+                        <outlet property="tableView" destination="On0-4E-MUV" id="xvP-kf-kc8"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jX1-X2-Scw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

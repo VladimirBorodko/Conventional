@@ -27,8 +27,7 @@ public struct Converter<Output> {
     ( _ input: Input
     ) throws -> Output {
     let input = try (input as? OpaqueWrapper).map{try $0.unwrapValue()} ?? input
-    let inputType = type(of: input as Any)
-    guard let map = converts[String(reflecting: inputType)] else {throw NotRegistered(type: inputType)}
+    guard let map = try converts[key(input)] else {throw NotRegistered(value: input)}
     return try map(input)
   }
 
@@ -36,7 +35,7 @@ public struct Converter<Output> {
 
   public struct NotRegistered: Error {
 
-    let type: Any.Type
+    let value: Any
   }
 
   public struct NotUnique: Error {

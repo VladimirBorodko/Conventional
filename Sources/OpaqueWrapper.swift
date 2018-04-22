@@ -19,3 +19,13 @@ extension Optional: OpaqueWrapper {
     return wrapped
   }
 }
+
+internal func key
+  ( _ value: Any
+  ) throws -> String {
+  let valueType = try (value as? OpaqueWrapper)
+    .map{try type(of: $0.unwrapValue())}
+    ?? value as? AnyClass
+    ?? type(of: value)
+  return String(reflecting: valueType)
+}

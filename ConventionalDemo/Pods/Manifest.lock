@@ -1,5 +1,5 @@
 PODS:
-  - Conventional (0.0.1)
+  - Conventional (1.0.0)
   - RxCocoa (4.0.0):
     - RxSwift (~> 4.0)
   - RxSwift (4.0.0)
@@ -14,7 +14,7 @@ EXTERNAL SOURCES:
     :path: ../
 
 SPEC CHECKSUMS:
-  Conventional: 90bd767a7d40d1ac0a05db942b3efcf6f3cff341
+  Conventional: a2ca16d46e547a9c6a8f4abc366ad8d49e65d1e0
   RxCocoa: d62846ca96495d862fa4c59ea7d87e5031d7340e
   RxSwift: fd680d75283beb5e2559486f3c0ff852f0d35334
 

@@ -15,9 +15,8 @@ extension Compound.CollectionView {
     , for context: Any
     ) throws -> UICollectionViewCell {
     do {
-      let contextType = type(of: context)
       guard cv === collectionView else { throw WrongViewInstance(view: cv) }
-      guard let configurator = cells[String(reflecting: contextType)] else { throw NotRegisteredContext(type: contextType) }
+      guard let configurator = try cells[key(context)] else { throw Temp.error }
       let cell = try objc_throws { cv.dequeueReusableCell(withReuseIdentifier: configurator.reuseId, for: ip) }
       try configurator.configure(cell, context)
       return cell
@@ -39,10 +38,9 @@ extension Compound.CollectionView {
     , for context: Any
     ) throws -> UICollectionReusableView {
     do {
-      let contextType = type(of: context)
       guard cv === collectionView else {throw WrongViewInstance(view: cv)}
-      guard let config = supplementaries[UICollectionElementKindSectionHeader]?[String(reflecting: contextType)] else {
-        throw NotRegisteredContext(type: contextType)
+      guard let config = try supplementaries[UICollectionElementKindSectionHeader]?[key(context)] else {
+        throw Temp.error
       }
       let view = try objc_throws {
         cv.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: config.reuseId, for: ip)
@@ -67,10 +65,9 @@ extension Compound.CollectionView {
     , for context: Any
     ) throws -> UICollectionReusableView {
     do {
-      let contextType = type(of: context)
       guard cv === collectionView else {throw WrongViewInstance(view: cv)}
-      guard let config = supplementaries[UICollectionElementKindSectionFooter]?[String(reflecting: contextType)] else {
-        throw NotRegisteredContext(type: contextType)
+      guard let config = try supplementaries[UICollectionElementKindSectionFooter]?[key(context)] else {
+        throw Temp.error
       }
       let view = try objc_throws {
         cv.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionFooter, withReuseIdentifier: config.reuseId, for: ip)
@@ -90,10 +87,9 @@ extension Compound.CollectionView {
     , for context: Any
     ) throws -> UICollectionReusableView {
     do {
-      let contextType = type(of: context)
       guard cv === collectionView else {throw WrongViewInstance(view: cv)}
-      guard let config = supplementaries[kind]?[String(reflecting: contextType)] else {
-        throw NotRegisteredContext(type: contextType)
+      guard let config = try supplementaries[kind]?[key(context)] else {
+        throw Temp.error
       }
       let view = try objc_throws {
         cv.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: config.reuseId, for: ip)

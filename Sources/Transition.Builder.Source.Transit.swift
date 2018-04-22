@@ -11,7 +11,7 @@ extension Transition.Builder.Source.Transit {
 
   public func customTransit
     ( by perform: @escaping (Built, Container) throws -> Void
-    ) throws -> Transition.Builder<Built>.Source<Target, Container>.Configurator {
+    ) -> Transition.Builder<Built>.Source<Target, Container>.Configurator {
     return .init(built: source.builder.built) { contextType, configure in
       var builder = self.source.builder
       let extract = self.source.extract
@@ -46,12 +46,31 @@ extension Transition.Builder.Source.Transit where Container: UIViewController {
       return builder
     }
   }
-}
-
-extension Transition.Builder.Source.Transit where Built: UIViewController {
 
 }
 
-extension Transition.Builder.Source.Transit where Built: UIWindow {
+extension Transition.Builder.Source.Transit where Built: UIViewController, Container: UIViewController {
 
+  public func show() -> Transition.Builder<Built>.Source<Target, Container>.Configurator {
+    return customTransit { built, container in
+      built.show(container, sender: built)
+    }
+  }
+}
+
+extension Transition.Builder.Source.Transit where Built: UIWindow, Container: UIViewController {
+
+  public func changeRoot
+    ( duration: TimeInterval = Target.conventional.transitionDuration
+    , options: UIViewAnimationOptions = Target.conventional.transitionOptions
+    ) -> Transition.Builder<Built>.Source<Target, Container>.Configurator {
+    return customTransit { built, container in
+      if built.rootViewController == nil {
+        built.rootViewController = container
+        built.makeKeyAndVisible()
+        return
+      }
+      UIView.transition(with: built, duration: duration, options: options, animations: { built.rootViewController = container }, completion: nil)
+    }
+  }
 }
