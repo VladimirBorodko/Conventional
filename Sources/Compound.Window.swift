@@ -13,6 +13,25 @@ extension Compound.Window {
     ( _ builder: Transition.Builder<W>
     ) throws {
     source = builder.built
-    controllers = try builder.controllers.uniqueTransitions()
+    let transits = try builder.transiters.uniqueTransitions().mapValues { configure in
+      return { context in
+        Transition { controller in
+          try configure(controller, context)
+        }
+      }
+    }
+    transiter = .init(transits)
+  }
+
+  public func perform
+    ( _ transition: Transition
+    ) throws {
+    do {
+      guard let source = source else { throw Temp.error }
+      try transition.perform(source)
+    } catch let e {
+      assertionFailure("\(e)")
+      throw e
+    }
   }
 }

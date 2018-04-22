@@ -1,5 +1,5 @@
 //
-//  Transition.Brief.Segue.Key.swift
+//  Transition.Brief.Seguer.Key.swift
 //  Conventional
 //
 //  Created by Vladimir Borodko on 22/04/2018.
@@ -7,21 +7,21 @@
 
 import UIKit
 
-extension Transition.Brief.Segue.Key: Hashable {
+extension Transition.Brief.Seguer.Key: Hashable {
 
   internal var hashValue: Int {
     return id.hashValue ^ destination.hash()
   }
 
   internal static func ==
-    (lhs: Transition.Brief.Segue.Key
-    , rhs: Transition.Brief.Segue.Key
+    (lhs: Transition.Brief.Seguer.Key
+    , rhs: Transition.Brief.Seguer.Key
     ) -> Bool {
     return lhs.id == rhs.id && lhs.destination === rhs.destination
   }
 
   internal init
-    ( _ brief: Transition.Brief.Segue
+    ( _ brief: Transition.Brief.Seguer
     ) {
     self.id = brief.segueId
     self.destination = brief.destinationType

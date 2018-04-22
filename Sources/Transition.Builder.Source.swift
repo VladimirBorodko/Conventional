@@ -10,9 +10,9 @@ import UIKit
 extension Transition.Builder.Source {
   
   public func make
-    ( factory: @escaping Transit.Provide
+    ( factory: @escaping Transit.Make
     ) -> Transit {
-    return .init(source: self, provide: factory)
+    return .init(source: self, make: factory)
   }
 
   public func instantiateInitial
@@ -55,13 +55,13 @@ extension Transition.Builder.Source where Built: UIViewController {
     return .init(built: builder.built) { _, configure in
       var builder = self.builder
       let extract = self.extract
-      let brief = Transition.Brief.Segue(destinationType: Container.self, segueId: id) { segue, sender in
+      let brief = Transition.Brief.Seguer(destinationType: Container.self, segueId: id) { segue, sender in
         guard let segue = segue as? UIStoryboardSegue else { throw Temp.error }
         guard let container = segue.destination as? Container else { throw Temp.error }
         let target = try extract(container)
         try configure(target, sender)
       }
-      builder.segues.append(brief)
+      builder.seguers.append(brief)
       return builder
     }
   }
@@ -78,9 +78,9 @@ extension Transition.Builder.Source where Built: UIViewController {
     return .init(built: builder.built) { contextType, configure in
       var builder = self.builder
       let extract = self.extract
-      let brief = Transition.Brief.Controller(contextType: contextType) { controller, context in
+      let brief = Transition.Brief.Transiter(contextType: contextType) { controller, context in
         guard let controller = controller as? Built else { throw Temp.error }
-        let sender = Transition.Brief.Segue.Sender { segue in
+        let sender = Transition.Brief.Seguer.Sender { segue in
           guard let container = segue.destination as? Container else { throw Temp.error }
           let target = try extract(container)
           try configure(target, context)
@@ -89,7 +89,7 @@ extension Transition.Builder.Source where Built: UIViewController {
           controller.performSegue(withIdentifier: id, sender: sender)
         }
       }
-      builder.controllers.append(brief)
+      builder.transiters.append(brief)
       return builder
     }
   }

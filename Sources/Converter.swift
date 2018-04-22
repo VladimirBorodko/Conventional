@@ -12,7 +12,7 @@ public struct Converter<Output> {
   private let converts: [String: Convert]
 
   internal init
-    ( converts: [String: Convert]
+    ( _ converts: [String: Convert]
     ) {
     self.converts = converts
   }
@@ -55,7 +55,7 @@ public struct Converter<Output> {
 
     public init() {}
 
-    public func build() -> Converter<Output> { return .init(converts: converts) }
+    public func build() -> Converter<Output> { return .init(converts) }
 
     public func append<Input>
       ( _: Input.Type

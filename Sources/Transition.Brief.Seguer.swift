@@ -1,5 +1,5 @@
 //
-//  Transition.Brief.Controller.swift
+//  Transition.Brief.Seguer.swift
 //  Conventional
 //
 //  Created by Vladimir Borodko on 22/04/2018.
@@ -7,10 +7,11 @@
 
 import Foundation
 
-extension Array where Element == Transition.Brief.Controller {
-  internal func uniqueTransitions() throws -> [String: Transition.Configure] {
+extension Array where Element == Transition.Brief.Seguer {
+
+  internal func uniqueSegues() throws -> [Transition.Brief.Seguer.Key: Transition.Configure] {
     return try self.reduce(into: [:]) { dict, brief in
-      let key = String(reflecting: brief.contextType)
+      let key = Transition.Brief.Seguer.Key(brief)
       guard dict[key] == nil else { throw Temp.error }
       dict[key] = brief.configure
     }

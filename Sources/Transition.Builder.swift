@@ -37,12 +37,12 @@ extension Transition.Builder where Built: ConventionComplying {
     , perform: @escaping (Built, Context) throws -> Void = Built.conventional.mock()
     ) -> Transition.Builder<Built> {
     var builder = self
-    let brief = Transition.Brief.Controller(contextType: Context.self) { built, context in
+    let brief = Transition.Brief.Transiter(contextType: Context.self) { built, context in
       guard let built = built as? Built else { throw Temp.error }
       guard let context = context as? Context else { throw Temp.error }
       try perform(built, context)
     }
-    builder.controllers.append(brief)
+    builder.transiters.append(brief)
     return builder
   }
 }

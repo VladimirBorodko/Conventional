@@ -27,13 +27,14 @@ public enum Compound {
   public struct ViewController {
 
     internal weak var source: UIViewController?
-    internal let segues: [Transition.Brief.Segue.Key: Transition.Configure]
-    internal let controllers: [String: Transition.Configure]
+    internal let segues: [Transition.Brief.Seguer.Key: Transition.Configure]
+    internal let provider: Converter<UIViewController>
+    public let transiter: Converter<Transition>
   }
 
   public struct Window {
 
     internal weak var source: UIWindow?
-    internal let controllers: [String: Transition.Configure]
+    public let transiter: Converter<Transition>
   }
 }

@@ -12,12 +12,14 @@ public struct Transition {
   internal let perform : (AnyObject) throws -> Void
 
   internal typealias Configure = ( _ view: AnyObject, _ context: Any) throws -> Void
+  internal typealias Provide = ( _ context: Any) throws -> UIViewController
 
   public struct Builder<Built: AnyObject> {
 
     internal let built: Built
-    internal var segues: [Brief.Segue] = []
-    internal var controllers: [Brief.Controller] = []
+    internal var seguers: [Brief.Seguer] = []
+    internal var transiters: [Brief.Transiter] = []
+    internal var providers: [Brief.Provider] = []
 
     public struct Source<Target: UIViewController, Container: AnyObject> {
 
@@ -29,9 +31,9 @@ public struct Transition {
       public struct Transit {
 
         internal let source: Source
-        internal let provide: Provide
+        internal let make: Make
 
-        public typealias Provide = () throws -> Container
+        public typealias Make = () throws -> Container
       }
 
       public struct Configurator {
@@ -46,7 +48,7 @@ public struct Transition {
 
   internal enum Brief {
 
-    internal struct Segue {
+    internal struct Seguer {
 
       internal let destinationType: AnyClass
       internal let segueId: String
@@ -65,10 +67,16 @@ public struct Transition {
       }
     }
 
-    internal struct Controller {
+    internal struct Transiter {
 
       internal let contextType: Any.Type
       internal let configure: Configure
+    }
+
+    internal struct Provider {
+
+      internal let contextType: Any.Type
+      internal let provide: Provide
     }
   }
 }

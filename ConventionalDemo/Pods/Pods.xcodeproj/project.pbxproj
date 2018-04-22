@@ -274,9 +274,10 @@
 		E55F49C1A69F0D13FE855576E8BC80EE /* _RX.h in Headers */ = {isa = PBXBuildFile; fileRef = 38073384EF9B8792FA9BAB845AE4FAB4 /* _RX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E638B88FA60CB89C5B9FA01FF3B251EF /* RetryWhen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB6966590594A7B7113AAFC090E838E /* RetryWhen.swift */; };
 		E7084F66F9E753BD1CD26E3ACB036B50 /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3D0039F506E1DF5E8F22623D6DBA7F /* Lock.swift */; };
-		E7C8403A208BF8D100D44498 /* Transition.Brief.Segue.Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C84039208BF8D100D44498 /* Transition.Brief.Segue.Key.swift */; };
-		E7C8403C208C05AA00D44498 /* Transition.Brief.Segue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C8403B208C05AA00D44498 /* Transition.Brief.Segue.swift */; };
-		E7C8403F208C0B5800D44498 /* Transition.Brief.Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C8403E208C0B5800D44498 /* Transition.Brief.Controller.swift */; };
+		E7C8403A208BF8D100D44498 /* Transition.Brief.Seguer.Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C84039208BF8D100D44498 /* Transition.Brief.Seguer.Key.swift */; };
+		E7C8403C208C05AA00D44498 /* Transition.Brief.Seguer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C8403B208C05AA00D44498 /* Transition.Brief.Seguer.swift */; };
+		E7C8403F208C0B5800D44498 /* Transition.Brief.Transiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C8403E208C0B5800D44498 /* Transition.Brief.Transiter.swift */; };
+		E7C84041208C150D00D44498 /* Transition.Brief.Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C84040208C150D00D44498 /* Transition.Brief.Provider.swift */; };
 		E8996994266B6CF8A4A2212E6421BAFC /* RxCocoa-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D20EDAD8CF7B20C22916431F3CF7B2 /* RxCocoa-dummy.m */; };
 		E8E29044C8C8BA764003B53ACA0A30E3 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3C07EEC5D4709FAE797B983DFEC3FB /* Error.swift */; };
 		E939C6E45C4351A1A77E7AB684703C17 /* DelaySubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9FF374C9882B832692699977449D80 /* DelaySubscription.swift */; };
@@ -644,9 +645,10 @@
 		E6269BEF1C3DF53BD7C61BDC226B855C /* TextInput.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TextInput.swift; path = RxCocoa/Common/TextInput.swift; sourceTree = "<group>"; };
 		E6E128F07FB93A0F3026BD4B4440BE8D /* ControlProperty+Driver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "ControlProperty+Driver.swift"; path = "RxCocoa/Traits/Driver/ControlProperty+Driver.swift"; sourceTree = "<group>"; };
 		E79776A5CFDA0A165272D54ACF9FC21C /* Materialize.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Materialize.swift; path = RxSwift/Observables/Materialize.swift; sourceTree = "<group>"; };
-		E7C84039208BF8D100D44498 /* Transition.Brief.Segue.Key.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Transition.Brief.Segue.Key.swift; path = Sources/Transition.Brief.Segue.Key.swift; sourceTree = "<group>"; };
-		E7C8403B208C05AA00D44498 /* Transition.Brief.Segue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Transition.Brief.Segue.swift; path = Sources/Transition.Brief.Segue.swift; sourceTree = "<group>"; };
-		E7C8403E208C0B5800D44498 /* Transition.Brief.Controller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Transition.Brief.Controller.swift; path = Sources/Transition.Brief.Controller.swift; sourceTree = "<group>"; };
+		E7C84039208BF8D100D44498 /* Transition.Brief.Seguer.Key.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Transition.Brief.Seguer.Key.swift; path = Sources/Transition.Brief.Seguer.Key.swift; sourceTree = "<group>"; };
+		E7C8403B208C05AA00D44498 /* Transition.Brief.Seguer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Transition.Brief.Seguer.swift; path = Sources/Transition.Brief.Seguer.swift; sourceTree = "<group>"; };
+		E7C8403E208C0B5800D44498 /* Transition.Brief.Transiter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Transition.Brief.Transiter.swift; path = Sources/Transition.Brief.Transiter.swift; sourceTree = "<group>"; };
+		E7C84040208C150D00D44498 /* Transition.Brief.Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Transition.Brief.Provider.swift; path = Sources/Transition.Brief.Provider.swift; sourceTree = "<group>"; };
 		E84101CFF70ED07860E01D9264A0F09A /* UIButton+Rx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIButton+Rx.swift"; path = "RxCocoa/iOS/UIButton+Rx.swift"; sourceTree = "<group>"; };
 		E851287EC9238A87FB83F5C27BFFC293 /* Objc.mm */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.objcpp; name = Objc.mm; path = Sources/Objc.mm; sourceTree = "<group>"; };
 		EBC529D311B2C55551DBC96693AFC781 /* ToArray.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ToArray.swift; path = RxSwift/Observables/ToArray.swift; sourceTree = "<group>"; };
@@ -1004,9 +1006,10 @@
 				A838D791BB0D0AF9CAC9DACDC2B38696 /* Reuseable.Builder.Registrator.swift */,
 				C283C19970490924A19AB04233BE44A1 /* Reuseable.Builder.Registrator.Configurator.swift */,
 				FBAC8A4A5CAE8C8F0F2C11FD39C0AB1F /* Transition.swift */,
-				E7C8403E208C0B5800D44498 /* Transition.Brief.Controller.swift */,
-				E7C8403B208C05AA00D44498 /* Transition.Brief.Segue.swift */,
-				E7C84039208BF8D100D44498 /* Transition.Brief.Segue.Key.swift */,
+				E7C84040208C150D00D44498 /* Transition.Brief.Provider.swift */,
+				E7C8403B208C05AA00D44498 /* Transition.Brief.Seguer.swift */,
+				E7C84039208BF8D100D44498 /* Transition.Brief.Seguer.Key.swift */,
+				E7C8403E208C0B5800D44498 /* Transition.Brief.Transiter.swift */,
 				E04EFCD576D4C0554870A8F1BFBADD90 /* Transition.Builder.swift */,
 				26DF6299B27FB34EA5FA4AD666B21966 /* Transition.Builder.Source.swift */,
 				097215563449D05A172AC1D5AB313973 /* Transition.Builder.Source.Configurator.swift */,
@@ -1458,10 +1461,11 @@
 				1CD30A8F1E1E0765B51A13751CDCF8D2 /* Compound.swift in Sources */,
 				B468AA910AF5AF8AB306E97C6610288D /* Compound.TableView.swift in Sources */,
 				403FA49742FCD5393CB623304B7AABFD /* Compound.ViewController.swift in Sources */,
+				E7C84041208C150D00D44498 /* Transition.Brief.Provider.swift in Sources */,
 				ACA081597A5C7C6CDDEC78F2AA64E8F2 /* Compound.Window.swift in Sources */,
 				E5519E2F3FE94D94AEE4B6374F067861 /* Convention.swift in Sources */,
 				42287D3C3FCB4973827DDC4C16DA2254 /* Conventional-dummy.m in Sources */,
-				E7C8403F208C0B5800D44498 /* Transition.Brief.Controller.swift in Sources */,
+				E7C8403F208C0B5800D44498 /* Transition.Brief.Transiter.swift in Sources */,
 				EE868DF36BCE33BD8A8834E145474F8C /* Conventional.swift in Sources */,
 				563A8CD554040186E8E0ABBFC17B0E69 /* Converter.swift in Sources */,
 				AD34583C00781FDA082F9A51C525B568 /* Errors.swift in Sources */,
@@ -1470,11 +1474,11 @@
 				B4D2F6817EB5379A493B0C43ADB70843 /* OpaqueWrapper.swift in Sources */,
 				FB14BA41A98AD82DF3336D849BDD7E34 /* Reuseable.Builder.swift in Sources */,
 				71A19FFDB8E16FDA00E41F078B72F7A8 /* Reuseable.Builder.Registrator.Configurator.swift in Sources */,
-				E7C8403A208BF8D100D44498 /* Transition.Brief.Segue.Key.swift in Sources */,
+				E7C8403A208BF8D100D44498 /* Transition.Brief.Seguer.Key.swift in Sources */,
 				8490E6534A42A07F55DF3444B2F0D3C5 /* Reuseable.Builder.Registrator.swift in Sources */,
 				E2D954DCC213C8534AE4343DCA5978FB /* Reuseable.Brief.swift in Sources */,
 				B8C633435E153D29532BBFC672530E01 /* Reuseable.swift in Sources */,
-				E7C8403C208C05AA00D44498 /* Transition.Brief.Segue.swift in Sources */,
+				E7C8403C208C05AA00D44498 /* Transition.Brief.Seguer.swift in Sources */,
 				DA44A4FEC344128F983BE9EF89D0EBDA /* Transition.Builder.Source.Configurator.swift in Sources */,
 				4F91DD1345EA9F7BC8A73D3D837E6A56 /* Transition.Builder.Source.swift in Sources */,
 				9FA1D054F7DB3BAA5B669104632386A0 /* Transition.Builder.Source.Transit.swift in Sources */,
