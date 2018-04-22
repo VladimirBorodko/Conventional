@@ -1,5 +1,5 @@
 //
-//  Transition.Builder.Source.Configurator+UIStoryboardSegue.swift
+//  Transition.Builder.Source.Configurator.swift
 //  Conventional
 //
 //  Created by Vladimir Borodko on 21/04/2018.
@@ -9,7 +9,7 @@ import UIKit
 
 extension Transition.Builder.Source.Configurator where Container == UIStoryboardSegue {
 
-  public func generalConfigure
+  public func customConfigure
     ( by closure: @escaping (_ target: Target, _ sender: Any) throws -> Void
     ) -> Transition.Builder<Built> {
     return apply(Any.self) { target, sender in
@@ -21,7 +21,7 @@ extension Transition.Builder.Source.Configurator where Container == UIStoryboard
   public func configure
     ( by closure: @escaping (Built) -> (Target, _ sender: Any) -> Void
     ) -> Transition.Builder<Built> {
-    return generalConfigure { [weak built = self.built] target, sender in
+    return customConfigure { [weak built = self.built] target, sender in
       guard let built = built else { throw Temp.error }
       closure(built)(target, sender)
     }
@@ -31,7 +31,7 @@ extension Transition.Builder.Source.Configurator where Container == UIStoryboard
     ( by router: Router
     , with closure: @escaping (Router) -> (Built, Target, _ sender: Any) -> Void
     ) -> Transition.Builder<Built> {
-    return generalConfigure { [weak router, weak built = self.built] target, sender in
+    return customConfigure { [weak router, weak built = self.built] target, sender in
       guard let router = router else { throw Temp.error }
       guard let built = built else { throw Temp.error }
       closure(router)(built, target, sender)
@@ -42,7 +42,7 @@ extension Transition.Builder.Source.Configurator where Container == UIStoryboard
     ( by router: Router
     , with closure: @escaping (Router) -> (Target) -> Void
     ) -> Transition.Builder<Built> {
-    return generalConfigure { [weak router] target, sender in
+    return customConfigure { [weak router] target, sender in
       guard let router = router else { throw Temp.error }
       closure(router)(target)
     }
@@ -51,7 +51,7 @@ extension Transition.Builder.Source.Configurator where Container == UIStoryboard
 
 extension Transition.Builder.Source.Configurator where Container: UIViewController {
 
-  public func generalConfigure<Context>
+  public func customConfigure<Context>
     ( _ contextType: Context.Type
     , with closure: @escaping (Target, Context) throws -> Void
     ) -> Transition.Builder<Built> {
@@ -65,7 +65,7 @@ extension Transition.Builder.Source.Configurator where Container: UIViewControll
   public func configure<Context>
     ( with closure: @escaping (Built) -> (Target, Context) -> Void
     ) -> Transition.Builder<Built> {
-    return generalConfigure(Context.self) { [weak built = self.built] target, context in
+    return customConfigure(Context.self) { [weak built = self.built] target, context in
       guard let built = built else { throw Temp.error }
       closure(built)(target, context)
     }
@@ -74,7 +74,7 @@ extension Transition.Builder.Source.Configurator where Container: UIViewControll
   public func configure<Context>
     ( with closure: @escaping (Target) -> (Context) -> Void
     ) -> Transition.Builder<Built> {
-    return generalConfigure(Context.self) { target, context in
+    return customConfigure(Context.self) { target, context in
       closure(target)(context)
     }
   }
@@ -83,7 +83,7 @@ extension Transition.Builder.Source.Configurator where Container: UIViewControll
     ( by router: Router
     , with closure: @escaping (Router) -> (Built, Target, Context) -> Void
     ) -> Transition.Builder<Built> {
-    return generalConfigure(Context.self) { [weak router, weak built = self.built] target, context in
+    return customConfigure(Context.self) { [weak router, weak built = self.built] target, context in
       guard let router = router else { throw Temp.error }
       guard let built = built else { throw Temp.error }
       closure(router)(built, target, context)

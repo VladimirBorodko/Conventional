@@ -105,4 +105,16 @@ extension Compound.CollectionView {
       throw e
     }
   }
+
+  internal init
+    ( _ builder: Reuseable.Builder<UICollectionView>
+    ) throws {
+    self.collectionView = builder.built
+    try builder.cells.registerUniqueReuseIds(builder.built.registerCell(brief:))
+    cells = try builder.cells.uniqueModelContexts()
+    supplementaries = try builder.supplementaries.reduce(into: [:]) { result, views in
+      try views.value.registerUniqueReuseIds { try builder.built.registerView(kind: views.key, brief: $0) }
+      result[views.key] = try views.value.uniqueModelContexts()
+    }
+  }
 }

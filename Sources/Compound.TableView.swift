@@ -62,4 +62,15 @@ extension Compound.TableView {
       throw e
     }
   }
+
+  internal init
+    ( _ builder: Reuseable.Builder<UITableView>
+    ) throws {
+    self.tableView = builder.built
+    try builder.cells.registerUniqueReuseIds(builder.built.registerCell(brief:))
+    cells = try builder.cells.uniqueModelContexts()
+    try builder.supplementaries.values.reduce(into: [], +=).registerUniqueReuseIds(builder.built.registerView(brief:))
+    headers = try builder.headers.uniqueModelContexts()
+    footers = try builder.footers.uniqueModelContexts()
+  }
 }

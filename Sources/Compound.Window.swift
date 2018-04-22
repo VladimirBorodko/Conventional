@@ -8,5 +8,11 @@
 import UIKit
 
 extension Compound.Window {
-  
+
+  internal init<W: UIWindow>
+    ( _ builder: Transition.Builder<W>
+    ) throws {
+    source = builder.built
+    controllers = try builder.controllers.uniqueTransitions()
+  }
 }

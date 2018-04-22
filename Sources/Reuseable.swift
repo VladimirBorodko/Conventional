@@ -7,46 +7,35 @@
 
 import UIKit
 
-public enum Reuseable {
+public struct Reuseable {
+
+  internal let reuseId: String
+  internal let configure: Configure
 
   internal typealias Configure = ( _ view: AnyObject, _ context: Any) throws -> Void
 
   internal enum Source {
+
     case aClass(AnyClass)
     case assetNib(String, Bundle)
     case dataNib(Data, Bundle)
     case storyboard
   }
 
-  public struct Brief {
-    internal let reuseId: String
-    internal let configure: Configure
-  }
-
-  public struct Builder<T> {
-    internal let view: T
-    internal var cells: [Chapter] = []
-    internal var supplementaries: [String: [Chapter]] = [:]
-
-    internal var headers: [Chapter] {
-      return supplementaries[UICollectionElementKindSectionHeader] ?? []
-    }
-    internal var footers: [Chapter] {
-      return supplementaries[UICollectionElementKindSectionFooter] ?? []
-    }
-
-    internal init
-      ( _ view: T
-      ) {
-      self.view = view
-    }
+  public struct Builder<Built> {
+    
+    internal let built: Built
+    internal var cells: [Brief] = []
+    internal var supplementaries: [String: [Brief]] = [:]
 
     public struct Registrator<View: UIView> {
+
       internal let apply: Apply
 
-      internal typealias Apply = (Chapter) -> Builder
+      internal typealias Apply = (Brief) -> Builder
 
       public struct Configurator {
+
         internal let registrator: Registrator
         internal let source: Source
         internal let reuseId: String
@@ -54,7 +43,8 @@ public enum Reuseable {
     }
   }
 
-  struct Chapter {
+  struct Brief {
+
     internal let viewType: AnyClass
     internal let source: Source
     internal let reuseId: String

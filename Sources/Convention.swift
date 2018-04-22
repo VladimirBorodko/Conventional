@@ -20,7 +20,8 @@ public protocol Convention {
   static var nibName: String { get }
   static var bundle: Bundle { get }
   static var reuseIdentifier: String { get }
-  static var extract: (UIViewController) throws -> Complying { get }
+  static func extract<Container: UIViewController>() -> (Container) throws -> Complying
+  static func mock<Context>() -> (Complying, Context) throws -> Void
 }
 
 extension Convention {
@@ -33,7 +34,7 @@ extension Convention {
   public static var nibName: String { return String(describing: Complying.self) }
   public static var bundle: Bundle { return Bundle(for: Complying.self) }
   public static var reuseIdentifier: String { return String(describing: Complying.self) }
-  public static var extract: (UIViewController) throws -> Complying {
+  public static func extract<Container: UIViewController>() -> (Container) throws -> Complying {
     return { instantiated in
       if let complying = instantiated as? Complying { return complying }
       if let navigationController = instantiated as? UINavigationController
@@ -42,6 +43,9 @@ extension Convention {
       }
       throw ExtractFailed(type: Complying.self)
     }
+  }
+  public static func mock<Context>() -> (Complying, Context) throws -> Void {
+    return { _, _ in }
   }
 }
 

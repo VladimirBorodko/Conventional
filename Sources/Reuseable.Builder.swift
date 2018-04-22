@@ -1,5 +1,5 @@
 //
-//  Reuseable.Builder+UICollectionView.swift
+//  Reuseable.Builder.swift
 //  Conventional
 //
 //  Created by Vladimir Borodko on 19/04/2018.
@@ -7,14 +7,31 @@
 
 import Foundation
 
-extension Reuseable.Builder where T == UICollectionView {
+extension Reuseable.Builder {
+
+  internal var headers: [Reuseable.Brief] {
+    return supplementaries[UICollectionElementKindSectionHeader] ?? []
+  }
+  
+  internal var footers: [Reuseable.Brief] {
+    return supplementaries[UICollectionElementKindSectionFooter] ?? []
+  }
+
+  internal init
+    ( _ built: Built
+    ) {
+    self.built = built
+  }
+}
+
+extension Reuseable.Builder where Built == UICollectionView {
 
   public func cell<View: UICollectionViewCell>
     ( _: View.Type
     ) -> Registrator<View> {
-    return .init { chapter in
+    return .init { brief in
       var compound = self
-      compound.cells.append(chapter)
+      compound.cells.append(brief)
       return compound
     }
   }
@@ -22,9 +39,9 @@ extension Reuseable.Builder where T == UICollectionView {
   public func header<View: UICollectionReusableView>
     ( _: View.Type
     ) -> Registrator<View> {
-    return .init { chapter in
+    return .init { brief in
       var compound = self
-      compound.supplementaries[UICollectionElementKindSectionHeader] = compound.headers + [chapter]
+      compound.supplementaries[UICollectionElementKindSectionHeader] = compound.headers + [brief]
       return compound
     }
   }
@@ -32,9 +49,9 @@ extension Reuseable.Builder where T == UICollectionView {
   public func footer<View: UICollectionReusableView>
     ( _: View.Type
     ) -> Registrator<View> {
-    return .init { chapter in
+    return .init { brief in
       var compound = self
-      compound.supplementaries[UICollectionElementKindSectionFooter] = compound.footers + [chapter]
+      compound.supplementaries[UICollectionElementKindSectionFooter] = compound.footers + [brief]
       return compound
     }
   }
@@ -43,9 +60,9 @@ extension Reuseable.Builder where T == UICollectionView {
     ( _: View.Type
     , of kind: String
     ) -> Registrator<View> {
-    return .init { chapter in
+    return .init { brief in
       var compound = self
-      compound.supplementaries[kind] = (compound.supplementaries[kind] ?? []) + [chapter]
+      compound.supplementaries[kind] = (compound.supplementaries[kind] ?? []) + [brief]
       return compound
     }
   }
@@ -60,14 +77,14 @@ extension Reuseable.Builder where T == UICollectionView {
   }
 }
 
-extension Reuseable.Builder where T == UITableView {
+extension Reuseable.Builder where Built == UITableView {
 
   public func cell<View: UITableViewCell>
     ( _: View.Type
     ) -> Registrator<View> {
-    return .init { chapter in
+    return .init { brief in
       var compound = self
-      compound.cells.append(chapter)
+      compound.cells.append(brief)
       return compound
     }
   }
@@ -75,9 +92,9 @@ extension Reuseable.Builder where T == UITableView {
   public func header<View: UITableViewHeaderFooterView>
     ( _: View.Type
     ) -> Registrator<View> {
-    return .init { chapter in
+    return .init { brief in
       var compound = self
-      compound.supplementaries[UICollectionElementKindSectionHeader] = compound.headers + [chapter]
+      compound.supplementaries[UICollectionElementKindSectionHeader] = compound.headers + [brief]
       return compound
     }
   }
@@ -85,9 +102,9 @@ extension Reuseable.Builder where T == UITableView {
   public func footer<View: UITableViewHeaderFooterView>
     ( _: View.Type
     ) -> Registrator<View> {
-    return .init { chapter in
+    return .init { brief in
       var compound = self
-      compound.supplementaries[UICollectionElementKindSectionFooter] = compound.footers + [chapter]
+      compound.supplementaries[UICollectionElementKindSectionFooter] = compound.footers + [brief]
       return compound
     }
   }

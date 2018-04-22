@@ -9,57 +9,64 @@ import UIKit
 
 extension Transition.Builder {
   
-  public func mock<Context>
-    ( for _: Context.Type
-    ) -> Transition.Builder<Built> {
-    var builder = self
-    builder.mocks.append(.init(contextType: Context.self))
-    return builder
+  internal init
+    ( _ built: Built
+    ) {
+    self.built = built
   }
 
   public func register<Target: UIViewController>
     ( _: Target.Type
-    ) -> Transition.Builder<Built>.Source<Target, Target> {
-    return .init(builder: self, extract: {
-      guard let target = $0 as? Target else {
-        throw Temp.error
-      }
-      return target
-    })
+    ) -> Source<Target, Target> {
+    return .init(builder: self, extract: {$0})
   }
 
   public func register<Target: UIViewController, Container: UIViewController>
     ( _: Target.Type
     , containedIn _: Container.Type
-    , extract: @escaping (Container) throws -> Target = Target.conventional.extract
-    ) -> Transition.Builder<Built>.Source<Target, Container> {
-    return .init(builder: self, extract: {
-      guard let containder = $0 as? Container else {
-        throw Temp.error
-      }
-      return try extract(containder)
-    })
+    , extract: @escaping Source<Target, Container>.Extract = Target.conventional.extract()
+    ) -> Source<Target, Container> {
+    return .init(builder: self, extract: extract)
+  }
+}
+
+extension Transition.Builder where Built: ConventionComplying {
+
+  public func mock<Context>
+    ( for _: Context.Type
+    , perform: @escaping (Built, Context) throws -> Void = Built.conventional.mock()
+    ) -> Transition.Builder<Built> {
+    var builder = self
+    let brief = Transition.Brief.Controller(contextType: Context.self) { built, context in
+      guard let built = built as? Built else { throw Temp.error }
+      guard let context = context as? Context else { throw Temp.error }
+      try perform(built, context)
+    }
+    builder.controllers.append(brief)
+    return builder
   }
 }
 
 extension Transition.Builder where Built: UIViewController {
 
-  public func build() -> Compound.ViewController {
+  public func build() throws -> Compound.ViewController {
     do {
       return try .init(self)
     } catch let e {
-      fatalError("\(e)")
+      assertionFailure("\(e)")
+      throw e
     }
   }
 }
 
 extension Transition.Builder where Built: UIWindow {
   
-  public func build() -> Compound.Window {
+  public func build() throws -> Compound.Window {
     do {
       return try .init(self)
     } catch let e {
-      fatalError("\(e)")
+      assertionFailure("\(e)")
+      throw e
     }
   }
 }

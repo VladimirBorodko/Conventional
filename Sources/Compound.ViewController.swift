@@ -8,5 +8,12 @@
 import UIKit
 
 extension Compound.ViewController {
-  
+
+  internal init<VC: UIViewController>
+    ( _ builder: Transition.Builder<VC>
+    ) throws {
+    source = builder.built
+    segues = try builder.segues.uniqueSegues()
+    controllers = try builder.controllers.uniqueTransitions()
+  }
 }

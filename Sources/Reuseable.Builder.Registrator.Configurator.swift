@@ -9,23 +9,23 @@ import Foundation
 
 extension Reuseable.Builder.Registrator.Configurator {
 
-  public func generalConfigure<Context>
+  public func customConfigure<Context>
     ( _ contextType: Context.Type
     , by closure: @escaping (View, Context) throws -> Void
-    ) -> Reuseable.Builder<T> {
-    let chapter = Reuseable.Chapter(configurator: self, contextType: Context.self) { view, context in
+    ) -> Reuseable.Builder<Built> {
+    let brief = Reuseable.Brief(configurator: self, contextType: Context.self) { view, context in
       guard let view = view as? View else { throw Temp.error }
       guard let context = context as? Context else { throw Temp.error }
       try closure(view,context)
     }
-    return registrator.apply(chapter)
+    return registrator.apply(brief)
   }
 
   public func configure<Context, Owner: AnyObject>
     ( by owner: Owner
     , with closure: @escaping (Owner) -> (View, Context) -> Void
-    ) -> Reuseable.Builder<T> {
-    return generalConfigure(Context.self) { [weak owner] view, context in
+    ) -> Reuseable.Builder<Built> {
+    return customConfigure(Context.self) { [weak owner] view, context in
       guard let owner = owner else { throw Temp.error }
       closure(owner)(view,context)
     }
@@ -33,8 +33,8 @@ extension Reuseable.Builder.Registrator.Configurator {
 
   public func configure<Context>
     ( with closure: @escaping (View) -> (Context) -> Void
-    ) -> Reuseable.Builder<T> {
-    return generalConfigure(Context.self) { view, context in
+    ) -> Reuseable.Builder<Built> {
+    return customConfigure(Context.self) { view, context in
       closure(view)(context)
     }
   }

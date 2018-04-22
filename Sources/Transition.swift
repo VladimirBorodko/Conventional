@@ -13,34 +13,29 @@ public struct Transition {
 
   internal typealias Configure = ( _ view: AnyObject, _ context: Any) throws -> Void
 
-  internal struct Sender {
-    internal let send: Send
-    internal typealias Send = (UIStoryboardSegue) throws -> Void
-  }
-
   public struct Builder<Built: AnyObject> {
 
     internal let built: Built
-    internal var mocks: [MockChapter] = []
-    internal var segues: [SegueChapter] = []
-    internal var controllers: [ControllerChapter] = []
-    init(_ built: Built) {self.built = built}
+    internal var segues: [Brief.Segue] = []
+    internal var controllers: [Brief.Controller] = []
 
-    public struct Source<Target: UIViewController, Container> {
+    public struct Source<Target: UIViewController, Container: AnyObject> {
+
       internal let builder: Builder
       internal let extract: Extract
 
-      internal typealias Extract = (UIViewController) throws -> Target
+      public typealias Extract = (Container) throws -> Target
 
       public struct Transit {
 
         internal let source: Source
-        internal let factory: Factory
+        internal let provide: Provide
 
-        public typealias Factory = () throws -> Container
+        public typealias Provide = () throws -> Container
       }
 
       public struct Configurator {
+        
         internal let built: Built
         internal let apply: Apply
 
@@ -49,50 +44,31 @@ public struct Transition {
     }
   }
 
-  internal struct SegueChapter {
+  internal enum Brief {
 
-    internal let destinationType: AnyClass
-    internal let segueId: String
-    internal let configure: Configure
+    internal struct Segue {
 
-    internal struct Key: Hashable {
+      internal let destinationType: AnyClass
+      internal let segueId: String
+      internal let configure: Configure
 
-      internal let id: String
-      internal let destination: String
+      internal struct Key {
 
-      internal var hashValue: Int {return id.hashValue ^ destination.hashValue}
-
-      internal static func ==
-        (lhs: Key
-        , rhs: Key
-        ) -> Bool {
-        return lhs.id == rhs.id && lhs.destination == rhs.destination
+        internal let id: String
+        internal let destination: AnyClass
       }
 
-      internal init
-        ( _ chapter: SegueChapter
-        ) {
-        self.id = chapter.segueId
-        self.destination = String(reflecting: chapter.destinationType)
-      }
+      internal struct Sender {
 
-      internal init
-        ( _ segue: UIStoryboardSegue
-        ) {
-        self.id = segue.identifier ?? ""
-        self.destination = String(reflecting: type(of: segue.destination))
+        internal let send: Send
+        internal typealias Send = (UIStoryboardSegue) throws -> Void
       }
     }
-  }
 
-  internal struct MockChapter {
+    internal struct Controller {
 
-    internal let contextType: Any.Type
-  }
-
-  internal struct ControllerChapter {
-    
-    internal let contextType: Any.Type
-    internal let configure: Configure
+      internal let contextType: Any.Type
+      internal let configure: Configure
+    }
   }
 }
