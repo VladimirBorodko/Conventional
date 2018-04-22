@@ -20,7 +20,8 @@ public struct Converter<Output> {
   public func canConvert<Input>
     ( _ input: Input
     ) -> Bool {
-    return converts[String(reflecting: type(of: input as Any))] != nil
+    guard let key = try? key(input) else {return false}
+    return converts[key] != nil
   }
 
   public func convert<Input>

@@ -29,7 +29,8 @@ extension Compound.CollectionView {
   public func hasHeader
     ( for context: Any
     ) -> Bool {
-    return supplementaries[UICollectionElementKindSectionHeader]?[String(reflecting: type(of: context))] != nil
+    guard let key = try? key(context) else {return false}
+    return supplementaries[UICollectionElementKindSectionHeader]?[key] != nil
   }
 
   public func header
@@ -56,7 +57,8 @@ extension Compound.CollectionView {
   public func hasFooter
     ( for context: Any
     ) -> Bool {
-    return supplementaries[UICollectionElementKindSectionFooter]?[String(reflecting: type(of: context))] != nil
+    guard let key = try? key(context) else {return false}
+    return supplementaries[UICollectionElementKindSectionFooter]?[key] != nil
   }
 
   public func footer
