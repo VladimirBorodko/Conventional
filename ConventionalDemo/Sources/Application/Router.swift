@@ -21,6 +21,6 @@ class Router {
       .register(WelcomeC.self).instantiateInitial().changeRoot().noContext()
       .build()
 
-    _ = try? windowConfiguration?.transit(WelcomeC.self)
+    try? windowConfiguration?.transit(WelcomeC.self)
   }
 }

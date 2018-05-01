@@ -27,7 +27,6 @@ public enum Configuration {
   public struct ViewController {
 
     internal weak var source: UIViewController?
-    internal let sourceType: AnyClass
     internal let segues: [Transition.Brief.Seguer.Key: Transition.Configure]
     internal let provider: Converter<UIViewController>
     public let converter: Converter<Transition>
@@ -36,7 +35,6 @@ public enum Configuration {
   public struct Window {
 
     internal weak var source: UIWindow?
-    internal let sourceType: AnyClass
     public let converter: Converter<Transition>
   }
 }

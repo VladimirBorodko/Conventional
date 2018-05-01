@@ -10,18 +10,37 @@ import Foundation
 
 extension Optional {
 
-  private struct UnwrapFailed: Error {}
-  
-  func unwrap() throws -> Wrapped {
-    guard let wrapped = self else { throw UnwrapFailed() }
+  struct UnwrapFailed: Error {}
+
+  func unwrap(_ whenNil: @autoclosure () -> Error = UnwrapFailed()) throws -> Wrapped {
+    guard let wrapped = self else { throw whenNil() }
     return wrapped
   }
 
-  func either(_ restore: @autoclosure ()->Wrapped) -> Wrapped {
-    return self ?? restore()
+  func restore(_ whenNil: @autoclosure () -> Wrapped) -> Wrapped {
+    return self ?? whenNil()
+  }
+
+  func restoreMap(_ whenNil: () throws -> Wrapped?) rethrows -> Optional {
+    return try self ?? whenNil()
+  }
+
+  func filter(_ include: Bool) -> Optional {
+    return include ? self : nil
   }
 
   func cast<T>(_: T.Type) -> Optional<T> {
     return self as? T
+  }
+
+  func flatten<T>() -> T? where Wrapped == T? {
+    return self.flatMap {$0}
+  }
+
+  var hasSome: Bool {
+    switch self {
+    case .some: return true
+    case .none: return false
+    }
   }
 }

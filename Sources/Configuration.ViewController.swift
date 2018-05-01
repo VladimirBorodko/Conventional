@@ -14,7 +14,6 @@ extension Configuration.ViewController {
     ) throws
   {
     source = builder.built
-    sourceType = type(of: builder.built)
     segues = try builder.seguers.uniqueSegues()
     let transits = try builder.transiters.uniqueTransitions().mapValues { configure in
       return { context in

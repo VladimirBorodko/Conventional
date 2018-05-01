@@ -14,7 +14,6 @@ extension Configuration.Window {
     ) throws
   {
     source = builder.built
-    sourceType = type(of: builder.built)
     let transits = try builder.transiters.uniqueTransitions().mapValues { configure in
       return { context in
         Transition { controller in

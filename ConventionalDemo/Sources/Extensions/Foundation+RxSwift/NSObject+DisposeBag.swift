@@ -22,6 +22,6 @@ extension NSObject {
     }
     return objc_getAssociatedObject(self, &Static.context)
       .cast(DisposeBag.self)
-      .either(newBag)
+      .restore(newBag)
   }
 }
