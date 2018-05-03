@@ -23,7 +23,7 @@
 ``` swift
 override func viewDidLoad() {
   super.viewDidLoad()
-  tableConfiguration = try? tableView.conventional.configuration
+  tableConfiguration = tableView.conventional.configuration
     .cell(StringCellV.self).byClass().configure(with: StringCellV.configure(stringVM:))
     .cell(IntCellV.self).inStoryboard().configure(with: IntCellV.configure(intVM:))
     .cellFromNib(ConventionalCell1V.self)
@@ -32,7 +32,7 @@ override func viewDidLoad() {
 }
 
 func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-  return try! tableConfiguration!.cell(from: tableView, at: indexPath, for: cellModels[indexPath.row])
+  return tableConfiguration.cell(from: tableView, at: indexPath, for: cellModels[indexPath.row])
 }
 ```
 
@@ -43,11 +43,11 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
   let window = UIWindow(frame: UIScreen.main.bounds)
   self.window = window
 
-  windowConfiguration = try? window.conventional.configuration
+  windowConfiguration = window.conventional.configuration
     .register(WelcomeC.self).instantiateInitial().changeRoot().noContext()
     .build()
 
-  _ = try? windowConfiguration?.transit(WelcomeC.self)
+  windowConfiguration.transit(WelcomeC.self)
   return true
 }
 ```
@@ -57,15 +57,15 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 ``` swift
 override func viewDidLoad() {
   super.viewDidLoad()
-  configuration = try? self.conventional.configuration
+  configuration = conventional.configuration
     .embedd(SubController.self, \.subController)
     .showInitial(SeguedC.self)
     .build()
-  viewModel = ViewModel(converter: configuration.converter, transit: {[weak self] in _ = try? self?.configuration.perform($0)})
+  viewModel = ViewModel(converter: configuration.converter, transit: {[weak self] in self?.configuration.perform($0)})
 }
 
 override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-  try? configuration?.prepare(for: segue, sender: sender)
+  configuration.prepare(for: segue, sender: sender)
 }
 ```
 

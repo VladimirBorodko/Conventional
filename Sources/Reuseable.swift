@@ -20,6 +20,7 @@ public struct Reuseable {
     case assetNib(String, Bundle)
     case dataNib(Data, Bundle)
     case storyboard
+    case provide( (Any) throws -> UIView? )
   }
 
   public struct Builder<Built> {

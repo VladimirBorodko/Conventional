@@ -13,19 +13,27 @@ extension Configuration.CollectionView {
     ( from cv: UICollectionView
     , at ip: IndexPath
     , for context: Any
-    ) throws -> UICollectionViewCell
+    , file: StaticString = #file
+    , line: UInt = #line
+    ) -> UICollectionViewCell
   {
-    do {
-      try checkSameInstance(collectionView, cv)
-      let key = try makeKey(context)
-      guard let configurator = cells[key] else { throw Errors.NotRegistered(key: key) }
-      let cell = try objc_throws { cv.dequeueReusableCell(withReuseIdentifier: configurator.reuseId, for: ip) }
-      try configurator.configure(cell, context)
-      return cell
-    } catch let e {
-      assertionFailure("\(e)")
-      throw e
-    }
+    return Flare(context, file: file, line : line)
+      .perform { _ in try checkSameInstance(source, cv) }
+      .map(makeKey)
+      .map { try cells[$0].unwrap(Errors.NotRegistered(key: $0)) }
+      .flatMap { $0(cv, ip, context) }
+      .unwrap()
+//    do {
+//      try checkSameInstance(source, cv)
+//      let key = try makeKey(context)
+//      guard let configurator = cells[key] else { throw Errors.NotRegistered(key: key) }
+//      let cell = try objc_throws { cv.dequeueReusableCell(withReuseIdentifier: configurator.reuseId, for: ip) }
+//      try configurator.configure(cell, context)
+//      return cell
+//    } catch let e {
+//      assertionFailure("\(e)")
+//      throw e
+//    }
   }
 
   public func hasHeader
@@ -40,23 +48,34 @@ extension Configuration.CollectionView {
     ( from cv: UICollectionView
     , at ip: IndexPath
     , for context: Any
-    ) throws -> UICollectionReusableView
+    , file: StaticString = #file
+    , line: UInt = #line
+    ) -> UICollectionReusableView
   {
-    do {
-      try checkSameInstance(collectionView, cv)
-      let key = try makeKey(context)
-      guard let config = supplementaries[UICollectionElementKindSectionHeader]?[key] else {
-        throw Errors.NotRegistered(key: key)
-      }
-      let view = try objc_throws {
-        cv.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: config.reuseId, for: ip)
-      }
-      try config.configure(view, context)
-      return view
-    } catch let e {
-      assertionFailure("\(e)")
-      throw e
-    }
+    return Flare(context, file: file, line : line)
+      .perform { _ in try checkSameInstance(source, cv) }
+      .map(makeKey)
+      .map { key in
+        try supplementaries[UICollectionElementKindSectionHeader]
+          .flatMap {$0[key]}
+          .unwrap(Errors.NotRegistered(key: key))
+      }.flatMap { $0(cv, UICollectionElementKindSectionHeader, ip, context) }
+      .unwrap()
+//    do {
+//      try checkSameInstance(source, cv)
+//      let key = try makeKey(context)
+//      guard let config = supplementaries[UICollectionElementKindSectionHeader]?[key] else {
+//        throw Errors.NotRegistered(key: key)
+//      }
+//      let view = try objc_throws {
+//        cv.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: config.reuseId, for: ip)
+//      }
+//      try config.configure(view, context)
+//      return view
+//    } catch let e {
+//      assertionFailure("\(e)")
+//      throw e
+//    }
   }
 
   public func hasFooter
@@ -71,23 +90,34 @@ extension Configuration.CollectionView {
     ( from cv: UICollectionView
     , at ip: IndexPath
     , for context: Any
-    ) throws -> UICollectionReusableView
+    , file: StaticString = #file
+    , line: UInt = #line
+    ) -> UICollectionReusableView
   {
-    do {
-      try checkSameInstance(collectionView, cv)
-      let key = try makeKey(context)
-      guard let config = supplementaries[UICollectionElementKindSectionFooter]?[key] else {
-        throw Errors.NotRegistered(key: key)
-      }
-      let view = try objc_throws {
-        cv.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionFooter, withReuseIdentifier: config.reuseId, for: ip)
-      }
-      try config.configure(view, context)
-      return view
-    } catch let e {
-      assertionFailure("\(e)")
-      throw e
-    }
+    return Flare(context, file: file, line : line)
+      .perform { _ in try checkSameInstance(source, cv) }
+      .map(makeKey)
+      .map { key in
+        try supplementaries[UICollectionElementKindSectionFooter]
+          .flatMap {$0[key]}
+          .unwrap(Errors.NotRegistered(key: key))
+      }.flatMap { $0(cv, UICollectionElementKindSectionFooter, ip, context) }
+      .unwrap()
+//    do {
+//      try checkSameInstance(source, cv)
+//      let key = try makeKey(context)
+//      guard let config = supplementaries[UICollectionElementKindSectionFooter]?[key] else {
+//        throw Errors.NotRegistered(key: key)
+//      }
+//      let view = try objc_throws {
+//        cv.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionFooter, withReuseIdentifier: config.reuseId, for: ip)
+//      }
+//      try config.configure(view, context)
+//      return view
+//    } catch let e {
+//      assertionFailure("\(e)")
+//      throw e
+//    }
   }
 
   public func supplementary
@@ -95,35 +125,42 @@ extension Configuration.CollectionView {
     , of kind: String
     , at ip: IndexPath
     , for context: Any
-    ) throws -> UICollectionReusableView
+    , file: StaticString = #file
+    , line: UInt = #line
+    ) -> UICollectionReusableView
   {
-    do {
-      try checkSameInstance(collectionView, cv)
-      let key = try makeKey(context)
-      guard let config = supplementaries[kind]?[key] else {
-        throw Errors.NotRegistered(key: key)
-      }
-      let view = try objc_throws {
-        cv.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: config.reuseId, for: ip)
-      }
-      try config.configure(view, context)
-      return view
-    } catch let e {
-      assertionFailure("\(e)")
-      throw e
-    }
+    return Flare(context, file: file, line : line)
+      .perform { _ in try checkSameInstance(source, cv) }
+      .map(makeKey)
+      .map { key in
+        try supplementaries[kind]
+          .flatMap {$0[key]}
+          .unwrap(Errors.NotRegistered(key: key))
+      }.flatMap { $0(cv, kind, ip, context) }
+      .unwrap()
+//    do {
+//      try checkSameInstance(source, cv)
+//      let key = try makeKey(context)
+//      guard let config = supplementaries[kind]?[key] else {
+//        throw Errors.NotRegistered(key: key)
+//      }
+//      let view = try objc_throws {
+//        cv.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: config.reuseId, for: ip)
+//      }
+//      try config.configure(view, context)
+//      return view
+//    } catch let e {
+//      assertionFailure("\(e)")
+//      throw e
+//    }
   }
 
   internal init
-    ( _ builder: Reuseable.Builder<UICollectionView>
-    ) throws
+    ( _ source: UICollectionView
+    )
   {
-    self.collectionView = builder.built
-    try builder.cells.registerUniqueReuseIds(builder.built.registerCell(brief:))
-    cells = try builder.cells.uniqueModelContexts()
-    supplementaries = try builder.supplementaries.reduce(into: [:]) { result, views in
-      try views.value.registerUniqueReuseIds { try builder.built.registerView(kind: views.key, brief: $0) }
-      result[views.key] = try views.value.uniqueModelContexts()
-    }
+    self.source = source
+    self.cells = [:]
+    self.supplementaries = [:]
   }
 }

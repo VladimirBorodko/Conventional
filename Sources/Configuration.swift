@@ -9,19 +9,33 @@ import UIKit
 
 public enum Configuration {
 
+  public struct Controller {
+
+    internal weak var source: UIViewController?
+    internal let segues: [Transition.Brief.Seguer.Key: (AnyObject, Any) -> Flare<Void>]
+    internal let provides: [String: Flare<UIViewController>]
+    public let converter: Converter<Transition>
+  }
+
   public struct CollectionView {
 
-    internal let cells: [String: Reuseable]
-    internal let supplementaries: [String: [String: Reuseable]]
-    internal weak var collectionView: UICollectionView?
+    internal weak var source: UICollectionView?
+    internal var cells: [String: CellFactory]
+    internal var supplementaries: [String: [String: SupplementaryFactory]]
+
+    internal typealias CellFactory = (UICollectionView, IndexPath, Any) -> Flare<UICollectionViewCell>
+    internal typealias SupplementaryFactory = (UICollectionView, String, IndexPath, Any) -> Flare<UICollectionReusableView>
   }
 
   public struct TableView {
 
-    internal let cells: [String: Reuseable]
-    internal let headers: [String: Reuseable]
-    internal let footers: [String: Reuseable]
-    internal weak var tableView: UITableView?
+    internal weak var source: UITableView?
+    internal var cells: [String: CellFactory]
+    internal var headers: [String: SupplementaryFactory]
+    internal var footers: [String: SupplementaryFactory]
+
+    internal typealias CellFactory = (UITableView, IndexPath, Any) -> Flare<UITableViewCell>
+    internal typealias SupplementaryFactory = (UITableView, Any) -> Flare<UIView?>
   }
 
   public struct ViewController {

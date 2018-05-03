@@ -53,7 +53,14 @@ public struct Flare<Value>: Error {
     , _ parent: Flare<T>
     , _ errors: [Error] = []
     )
-  { self.init(value, parent.errors + errors, parent.file, parent.line) }
+  {
+    let errors = errors.flatMap { error -> [Error] in
+      guard let flare = error as? FlareConvertible else { return [error] }
+      return flare.errors
+    }
+    self.init(value, parent.errors + errors, parent.file, parent.line)
+
+  }
 
   private init<T>
     ( _ parent: Flare<T>
@@ -91,12 +98,13 @@ public struct Flare<Value>: Error {
   }
 
   public func perform
-    ( _ execute: (Value) throws -> Void
+    ( _ execute: (inout Value) throws -> Void
     ) -> Flare
   {
+    guard var value = self.value else { return self }
     do {
-      try value.map(execute)
-      return self
+      try execute(&value)
+      return .init(value, self)
     } catch let e {
       return .init(value, self, [e])
     }
@@ -116,6 +124,12 @@ public struct Flare<Value>: Error {
     }
     return value
   }
+
+  public func escalate
+    () throws
+  {
+    guard errors.isEmpty else { throw self }
+  }
 }
 
 extension Flare: CustomDebugStringConvertible {
@@ -125,4 +139,3 @@ extension Flare: CustomDebugStringConvertible {
       .joined(separator: "\n")
   }
 }
-

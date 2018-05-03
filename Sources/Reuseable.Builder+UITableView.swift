@@ -42,6 +42,54 @@ extension Reuseable.Builder where Built == UITableView {
     }
   }
 
+  public func noHeader<Context>
+    ( for _: Context.Type
+    ) -> Reuseable.Builder<Built>
+  {
+    let source = Reuseable.Source.provide { _ in nil }
+    var builder = self
+    builder.supplementaries[UICollectionElementKindSectionHeader] = builder.headers + [.init(contextType: Context.self, source: source)]
+    return builder
+  }
+
+  public func noFooter<Context>
+    ( for _: Context.Type
+    ) -> Reuseable.Builder<Built>
+  {
+    let source = Reuseable.Source.provide { _ in nil }
+    var builder = self
+    builder.supplementaries[UICollectionElementKindSectionFooter] = builder.footers + [.init(contextType: Context.self, source: source)]
+    return builder
+  }
+
+  public func makeHeader<Context>
+    ( for _: Context.Type
+    , factory: @escaping (Context) -> UIView?
+    ) -> Reuseable.Builder<Built>
+  {
+    let source = Reuseable.Source.provide { context in
+      let context = try cast(context, Context.self)
+      return factory(context)
+    }
+    var builder = self
+    builder.supplementaries[UICollectionElementKindSectionHeader] = builder.headers + [.init(contextType: Context.self, source: source)]
+    return builder
+  }
+
+  public func makeFooter<Context>
+    ( for _: Context.Type
+    , factory: @escaping (Context) -> UIView?
+    ) -> Reuseable.Builder<Built>
+  {
+    let source = Reuseable.Source.provide { context in
+      let context = try cast(context, Context.self)
+      return factory(context)
+    }
+    var builder = self
+    builder.supplementaries[UICollectionElementKindSectionFooter] = builder.footers + [.init(contextType: Context.self, source: source)]
+    return builder
+  }
+
   public func cellFromNib<View: UITableViewCell & ConventionalConfigurable>
     ( _: View.Type
     , reuseId: String = View.conventional.reuseIdentifier
@@ -139,13 +187,35 @@ extension Reuseable.Builder where Built == UITableView {
   }
 
   public func build
-    () throws -> Configuration.TableView
+    ( file: StaticString = #file
+    , line: UInt = #line
+    ) -> Configuration.TableView
   {
-    do {
-      return try .init(self)
-    } catch let e {
-      assertionFailure("\(e)")
-      throw e
-    }
+    return Flare(built, file: file, line : line)
+      .perform { tv in try cells
+        .registerUniqueReuseIds(tv.registerCell(brief:))
+        .escalate()
+      }.perform { tv in try supplementaries
+        .values
+        .reduce(into: [], +=)
+        .registerUniqueReuseIds(tv.registerView(brief:))
+        .escalate()
+      }.map(Configuration.TableView.init)
+      .perform { configuaration in
+        try cells
+          .uniqueModelContexts(dequeueTableCell)
+          .map { configuaration.cells = $0 }
+          .escalate()
+      }.perform { configuaration in
+        try headers
+          .uniqueModelContexts(dequeueTableSupplementary)
+          .map { configuaration.headers = $0 }
+          .escalate()
+      }.perform { configuaration in
+        try footers
+          .uniqueModelContexts(dequeueTableSupplementary)
+          .map { configuaration.footers = $0 }
+          .escalate()
+      }.unwrap()
   }
 }

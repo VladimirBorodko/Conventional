@@ -186,13 +186,45 @@ extension Reuseable.Builder where Built == UICollectionView {
   }
 
   public func build
-    () throws -> Configuration.CollectionView
+    ( file: StaticString = #file
+    , line: UInt = #line
+    ) -> Configuration.CollectionView
   {
-    do {
-      return try .init(self)
-    } catch let e {
-      assertionFailure("\(e)")
-      throw e
-    }
+    return Flare(built, file: file, line : line)
+      .perform { cv in try cells
+        .registerUniqueReuseIds(cv.registerCell(brief:))
+        .escalate()
+      }
+      .perform { cv in
+        try supplementaries
+          .reduce(Flare<Void>(())) { (flare, pair) in
+            let (kind, array) = pair
+            return flare.flatMap { _ in
+              array.registerUniqueReuseIds { brief in
+                try cv.registerView(kind: kind, brief: brief)
+              }
+            }
+          }
+          .escalate()
+      }
+      .map(Configuration.CollectionView.init)
+      .perform { configuaration in
+        try cells
+          .uniqueModelContexts(dequeueCollectionCell)
+          .map { configuaration.cells = $0 }
+          .escalate()
+      }
+      .perform { configuaration in
+        try supplementaries
+          .reduce(Flare<Void>(())) { (flare, pair) in
+            let (kind, array) = pair
+            return flare.flatMap { _ in
+              array
+                .uniqueModelContexts(dequeueCollectionSupplementary)
+                .map { configuaration.supplementaries[kind] = $0 }
+            }
+          }
+          .escalate()
+      }.unwrap()
   }
 }

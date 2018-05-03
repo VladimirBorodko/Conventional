@@ -21,28 +21,118 @@ extension Reuseable.Brief {
     self.contextType = contextType
     self.configure = configure
   }
+
+  internal init
+    ( contextType: Any.Type
+    , source: Reuseable.Source
+    )
+  {
+    self.viewType = UIView.self
+    self.source = source
+    self.reuseId = ""
+    self.contextType = contextType
+    self.configure = { _, _ in }
+  }
+
+}
+
+internal func dequeueTableCell
+  ( brief: Reuseable.Brief
+  ) -> Configuration.TableView.CellFactory
+{
+  let reuseId = brief.reuseId
+  let configure = brief.configure
+  return { tv, ip, ctx in
+    return Flare(())
+      .map { _ in
+        try objc_throws { tv.dequeueReusableCell(withIdentifier: reuseId, for: ip) }
+      }
+      .perform { cell in
+        try configure(cell, ctx)
+      }
+  }
+}
+
+internal func dequeueTableSupplementary
+  ( brief: Reuseable.Brief
+  ) -> Configuration.TableView.SupplementaryFactory
+{
+  let configure = brief.configure
+  switch brief.source {
+  case let .provide(factory):
+    return { _, ctx in
+      return Flare(())
+        .map { _ in try factory(ctx) }
+    }
+  default:
+    let reuseId = brief.reuseId
+    let viewType: AnyClass = brief.viewType
+    return { tv, ctx in
+      return Flare(())
+        .map { _ in
+          try objc_throws { tv.dequeueReusableHeaderFooterView(withIdentifier: reuseId) }
+        }
+        .perform { view in
+          guard let view = view else { throw Errors.UnwrapFailed(type: viewType) }
+          try configure(view, ctx)
+        }
+    }
+  }
+}
+
+internal func dequeueCollectionCell
+  ( brief: Reuseable.Brief
+  ) -> Configuration.CollectionView.CellFactory
+{
+  let reuseId = brief.reuseId
+  let configure = brief.configure
+  return { cv, ip, ctx in
+    return Flare(())
+      .map { _ in  try objc_throws { cv.dequeueReusableCell(withReuseIdentifier: reuseId, for: ip) } }
+      .perform { cell in try configure(cell, ctx) }
+  }
+}
+
+internal func dequeueCollectionSupplementary
+  ( brief: Reuseable.Brief
+  ) -> Configuration.CollectionView.SupplementaryFactory
+{
+  let reuseId = brief.reuseId
+  let configure = brief.configure
+  return { cv, kind, ip, ctx in
+    return Flare(())
+      .map { _ in  try objc_throws { cv.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: reuseId, for: ip) } }
+      .perform { view in try configure(view, ctx) }
+  }
 }
 
 extension Array where Element == Reuseable.Brief {
 
   internal func registerUniqueReuseIds
     ( _ register: (Reuseable.Brief) throws -> Void
-    ) throws
+    ) -> Flare<Void>
   {
-    _ = try self.reduce(into: [String:Void]()) { dict, brief in
-      guard dict[brief.reuseId] == nil else { throw Errors.NotUnique(key: brief.reuseId) }
-      try register(brief)
-      dict[brief.reuseId] = ()
-    }
+    return self
+      .reduce(Flare<[String:Void]>([:])) { flare, brief in
+        flare.perform { dict in
+          if case .provide = brief.source { return }
+          guard dict[brief.reuseId] == nil else { throw Errors.NotUnique(key: brief.reuseId) }
+          try register(brief)
+          dict[brief.reuseId] = ()
+        }
+      }.map { _ in }
   }
 
-  internal func uniqueModelContexts
-    () throws -> [String: Reuseable]
+  internal func uniqueModelContexts<T>
+    ( _ transform: (Reuseable.Brief) -> T
+    ) -> Flare<[String: T]>
   {
-    return try self.reduce(into: [:]) { dict, brief in
+    return self.reduce(Flare<[String: T]>([:])) { flare, brief in
       let key = String(reflecting: brief.contextType)
-      guard dict[key] == nil else { throw Errors.NotUnique(key: key) }
-      dict[key] = .init(reuseId: brief.reuseId, configure: brief.configure)
+      return flare.perform { dict in
+        guard dict[key] == nil else { throw Errors.NotUnique(key: key) }
+        dict[key] = transform(brief)
+      }
     }
   }
 }
@@ -60,8 +150,7 @@ extension UITableView {
       try objc_throws { self.register(UINib(nibName: name, bundle: bundle), forCellReuseIdentifier: brief.reuseId) }
     case let .dataNib(data, bundle):
       try objc_throws { self.register(UINib(data: data, bundle: bundle), forCellReuseIdentifier: brief.reuseId) }
-    case .storyboard:
-      break
+    default: break
     }
   }
 
@@ -76,8 +165,7 @@ extension UITableView {
       try objc_throws { self.register(UINib(nibName: name, bundle: bundle), forHeaderFooterViewReuseIdentifier: brief.reuseId) }
     case let .dataNib(data, bundle):
       try objc_throws { self.register(UINib(data: data, bundle: bundle), forHeaderFooterViewReuseIdentifier: brief.reuseId) }
-    case .storyboard:
-      break
+    default: break
     }
   }
 }
@@ -95,8 +183,7 @@ extension UICollectionView {
       try objc_throws{ self.register(UINib(nibName: name, bundle: bundle), forCellWithReuseIdentifier: brief.reuseId) }
     case let .dataNib(data, bundle):
       try objc_throws { self.register(UINib(data: data, bundle: bundle), forCellWithReuseIdentifier: brief.reuseId) }
-    case .storyboard:
-      break
+    default: break
     }
   }
 
@@ -112,8 +199,7 @@ extension UICollectionView {
       try objc_throws { self.register(UINib(nibName: name, bundle: bundle), forSupplementaryViewOfKind: kind, withReuseIdentifier: brief.reuseId) }
     case let .dataNib(data, bundle):
       try objc_throws { self.register(UINib(data: data, bundle: bundle), forSupplementaryViewOfKind: kind, withReuseIdentifier: brief.reuseId) }
-    case .storyboard:
-      break
+    default: break
     }
   }
 }

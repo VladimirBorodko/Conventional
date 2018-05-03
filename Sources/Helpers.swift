@@ -67,3 +67,13 @@ internal func checkSameInstance<T: AnyObject>
   guard let stored = stored else { throw Errors.ObjectDellocated(type: T.self) }
   guard stored === provided else { throw Errors.WrongInstance(type: T.self) }
 }
+
+extension Optional {
+  internal func unwrap
+    ( _ orThrow: @autoclosure () -> Error
+    ) throws -> Wrapped
+  {
+    guard let wrapped = self else {throw orThrow()}
+    return wrapped
+  }
+}
