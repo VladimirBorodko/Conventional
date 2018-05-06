@@ -17,14 +17,18 @@ extension Transition.Builder.Source.Transit {
     let extract = source.extract
     let make = self.make
     return .init(built: source.builder.built) { contextType, configure in
-      let brief = Transition.Brief.Transiter(contextType: contextType) { controller, context in
-        let controller = try cast(controller, Built.self)
-        let container = try make()
-        let target = try extract(container)
-        try configure(target, context)
-        try perform(controller, container)
+      let brief = Transition.Brief.transit(contextType) { context in
+        return Flare(context)
+          .map { context in
+            return Transition { built in
+              return Flare(())
+                .map { try make() }
+                .perform { try configure(extract($0), context).escalate() }
+                .map { try perform(cast(built, Built.self), $0) }
+            }
+          }
       }
-      builder.transiters.append(brief)
+      builder.briefs.append(brief)
       return builder
     }
   }
@@ -39,13 +43,13 @@ extension Transition.Builder.Source.Transit where Container: UIViewController {
     let extract = source.extract
     let make = self.make
     return .init(built: source.builder.built) { contextType, configure in
-      let brief = Transition.Brief.Provider(contextType: contextType) { context in
-        let container = try make()
-        let target = try extract(container)
-        try configure(target, context)
-        return container
+      let brief = Transition.Brief.provide(contextType) { context in
+        return Flare(())
+          .map { try make() }
+          .perform { try configure(extract($0), context).escalate() }
+          .map { $0 as UIViewController }
       }
-      builder.providers.append(brief)
+      builder.briefs.append(brief)
       return builder
     }
   }

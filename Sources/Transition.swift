@@ -9,17 +9,16 @@ import Foundation
 
 public struct Transition {
 
-  internal let perform : (AnyObject) throws -> Void
+  internal let perform : (AnyObject) -> Flare<Void>
 
-  internal typealias Configure = ( _ view: AnyObject, _ context: Any) throws -> Void
-  internal typealias Provide = ( _ context: Any) throws -> UIViewController
+  internal typealias Configure = ( _ view: AnyObject, _ context: Any) -> Flare<Void>
+  internal typealias Provide = ( _ context: Any) -> Flare<UIViewController>
+  internal typealias Transit = ( _ context: Any) -> Flare<Transition>
 
   public struct Builder<Built: AnyObject> {
 
     internal let built: Built
-    internal var seguers: [Brief.Seguer] = []
-    internal var transiters: [Brief.Transiter] = []
-    internal var providers: [Brief.Provider] = []
+    internal var briefs: [Brief] = []
 
     public struct Source<Target: UIViewController, Container: AnyObject> {
 
@@ -48,35 +47,21 @@ public struct Transition {
 
   internal enum Brief {
 
-    internal struct Seguer {
-
-      internal let destinationType: AnyClass
-      internal let segueId: String
-      internal let configure: Configure
-
-      internal struct Key {
-
-        internal let id: String
-        internal let destination: AnyClass
-      }
-
-      internal struct Sender {
-
-        internal let send: Send
-        internal typealias Send = (UIStoryboardSegue) throws -> Void
-      }
-    }
-
-    internal struct Transiter {
-
-      internal let contextType: Any.Type
-      internal let configure: Configure
-    }
-
-    internal struct Provider {
-
-      internal let contextType: Any.Type
-      internal let provide: Provide
-    }
+    case segue(String, AnyClass, Configure)
+    case transit(Any.Type, Transit)
+    case provide(Any.Type, Provide)
   }
+
+  internal struct Sender {
+
+    internal let send: Send
+    internal typealias Send = (UIStoryboardSegue) -> Flare<Void>
+  }
+}
+
+extension Transition {
+
+  internal static func empty
+    () -> Transition
+  { return .init { _ in return Flare(())} }
 }

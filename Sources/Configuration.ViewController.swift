@@ -9,76 +9,63 @@ import UIKit
 
 extension Configuration.ViewController {
 
-  internal init<VC: UIViewController>
-    ( _ builder: Transition.Builder<VC>
-    ) throws
+  internal init
+    ( _ source: UIViewController
+    )
   {
-    source = builder.built
-    segues = try builder.seguers.uniqueSegues()
-    let transits = try builder.transiters.uniqueTransitions().mapValues { configure in
-      return { context in
-        Transition { controller in
-          try configure(controller, context)
-        }
-      }
-    }
-    converter = .init(transits)
-    provider = try .init(builder.providers.uniqueProviders())
+    self.source = source
+    self.segues = [:]
+
+    self.provider = .init()
+    self.converter = .init(restore: Transition.empty)
   }
 
   public func perform
     ( _ transition: Transition
-    ) throws
+    , file: StaticString = #file
+    , line: UInt = #line
+    )
   {
-    do {
-      let source = try unwrap(self.source)
-      try transition.perform(source)
-    } catch let e {
-      assertionFailure("\(e)")
-      throw e
-    }
+    return Flare(source)
+      .map(strongify)
+      .flatMap(transition.perform)
+      .restore(())
+      .unwrap(file, line)
   }
 
   public func prepare
     ( for segue: UIStoryboardSegue
     , sender: Any?
-    ) throws
+    , file: StaticString = #file
+    , line: UInt = #line
+    )
   {
-    do {
-      guard let sender = sender else { return }
-      if let manualSender = sender as? Transition.Brief.Seguer.Sender {
-        return try manualSender.send(segue)
-      }
-      guard let seguer = segues[.init(segue)] else { return }
-      try seguer(segue, sender)
-    } catch let e {
-      assertionFailure("\(e)")
-      throw e
+    guard let sender = sender else { return }
+    if let manualSender = sender as? Transition.Sender {
+      return Flare(segue)
+        .flatMap(manualSender.send)
+        .restore(())
+        .unwrap(file, line)
+    }
+    if let configure = segues[segue.segueKey] {
+      return Flare(configure)
+        .flatMap { $0(segue, sender) }
+        .restore(())
+        .unwrap(file, line)
     }
   }
 
   public func provide
     ( for context: Any
-    ) throws -> UIViewController
-  {
-    do {
-      return try provider.convert(context)
-    } catch let e {
-      assertionFailure("\(e)")
-      throw e
-    }
-  }
+    , file: StaticString = #file
+    , line: UInt = #line
+    ) -> UIViewController
+  { return provider.convert(context, file: file, line: line) }
 
   public func transit
     ( _ context: Any
-    ) throws
-  {
-    do {
-      let source = try unwrap(self.source)
-      try converter.convert(context).perform(source)
-    } catch let e {
-      assertionFailure("\(e)")
-      throw e
-    }
-  }
+    , file: StaticString = #file
+    , line: UInt = #line
+    )
+  { perform(converter.convert(context, file: file, line: line), file: file, line: line) }
 }

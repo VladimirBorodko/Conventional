@@ -191,7 +191,7 @@ extension Reuseable.Builder where Built == UITableView {
     , line: UInt = #line
     ) -> Configuration.TableView
   {
-    return Flare(built, file: file, line : line)
+    return Flare(built)
       .perform { tv in try cells
         .registerUniqueReuseIds(tv.registerCell(brief:))
         .escalate()
@@ -203,19 +203,14 @@ extension Reuseable.Builder where Built == UITableView {
       }.map(Configuration.TableView.init)
       .perform { configuaration in
         try cells
-          .uniqueModelContexts(dequeueTableCell)
+          .uniqueCellContexts(dequeueTableCell)
           .map { configuaration.cells = $0 }
           .escalate()
       }.perform { configuaration in
-        try headers
-          .uniqueModelContexts(dequeueTableSupplementary)
-          .map { configuaration.headers = $0 }
+        try supplementaries
+          .uniqueSupplementaryContexts(dequeueTableSupplementary)
+          .map { configuaration.supplementaries = $0 }
           .escalate()
-      }.perform { configuaration in
-        try footers
-          .uniqueModelContexts(dequeueTableSupplementary)
-          .map { configuaration.footers = $0 }
-          .escalate()
-      }.unwrap()
+      }.unwrap(file, line)
   }
 }

@@ -9,34 +9,51 @@ import Foundation
 
 internal enum Errors {
 
-  internal struct ObjectDellocated: Error {
+  internal struct ObjectDeallocated: Error, CustomDebugStringConvertible {
     
-    let type: AnyClass
+    internal let type: AnyClass
+    internal var debugDescription: String { return "Error: \"\(String(reflecting: type))\" was deallocated" }
   }
 
-  internal struct NotUnique<Key: Hashable>: Error {
+  internal struct NotUniqueReuseId: Error, CustomDebugStringConvertible {
 
-    let key: Key
+    internal let id: String
+    internal let kind: String?
+    internal var debugDescription: String {
+      return kind.map {"Error: reuseIdentifier \"\(id)\" not unique for kind \"\($0)\""}
+      ?? "Error: reuseIdentifier \"\(id)\" not unique"
+
+    }
   }
 
-  internal struct NotRegistered<Key: Hashable>: Error {
+  internal struct NotUnique<Key: Hashable & CustomDebugStringConvertible>: Error, CustomDebugStringConvertible {
 
-    let key: Key
+    internal let key: Key
+    internal var debugDescription: String { return "Error: \(String(reflecting: key)) not unique" }
   }
 
-  internal struct UnwrapFailed: Error {
+  internal struct NotRegistered<Key: Hashable & CustomDebugStringConvertible>: Error, CustomDebugStringConvertible {
 
-    let type: Any.Type
+    internal let key: Key
+    internal var debugDescription: String { return "Error: \(String(reflecting: key)) not registered" }
   }
 
-  internal struct WrongInstance: Error {
+  internal struct UnwrapFailed: Error, CustomDebugStringConvertible {
 
-    let type: AnyClass
+    internal let type: Any.Type
+    internal var debugDescription: String { return "Error: failed to unwrap \"\(String(reflecting: type))\"" }
   }
 
-  internal struct CastFailed: Error {
+  internal struct WrongInstance: Error, CustomDebugStringConvertible {
 
-    let actual: Any.Type
-    let expected: Any.Type
+    internal let type: AnyClass
+    internal var debugDescription: String { return "Error: wraong instance of \"\(String(reflecting: type))\"" }
+  }
+
+  internal struct CastFailed: Error, CustomDebugStringConvertible {
+
+    internal let actual: Any.Type
+    internal let expected: Any.Type
+    internal var debugDescription: String { return "Error: failed to cast from \"\(String(reflecting: actual))\" to \"\(String(reflecting: expected))\"" }
   }
 }

@@ -11,7 +11,7 @@ extension Transition.Builder.Source.Configurator {
 
   public func noContext
     () -> Transition.Builder<Built>
-  { return apply(Target.self) { _, _ in} }
+  { return apply(Target.self) { _, _ in Flare(())} }
 }
 
 extension Transition.Builder.Source.Configurator where Container == UIStoryboardSegue {
@@ -21,9 +21,9 @@ extension Transition.Builder.Source.Configurator where Container == UIStoryboard
     ) -> Transition.Builder<Built>
   {
     return apply(Any.self) { [weak built = self.built]  target, sender in
-      let built = try unwrap(built)
-      let target = try cast(target, Target.self)
-      try closure(built, target, sender)
+      return Flare(built)
+        .map(strongify)
+        .map { try closure($0, cast(target, Target.self), sender) }
     }
   }
 
@@ -42,7 +42,7 @@ extension Transition.Builder.Source.Configurator where Container == UIStoryboard
     ) -> Transition.Builder<Built>
   {
     return customConfigure { [weak router] built, target, sender in
-      let router = try unwrap(router)
+      let router = try strongify(router)
       closure(router)(built, target, sender)
     }
   }
@@ -53,7 +53,7 @@ extension Transition.Builder.Source.Configurator where Container == UIStoryboard
     ) -> Transition.Builder<Built>
   {
     return customConfigure { [weak router] _, target, sender in
-      let router = try unwrap(router)
+      let router = try strongify(router)
       closure(router)(target)
     }
   }
@@ -67,10 +67,9 @@ extension Transition.Builder.Source.Configurator where Container: UIViewControll
     ) -> Transition.Builder<Built>
   {
     return apply(Context.self) { [weak built = self.built] target, context in
-      let built = try unwrap(built)
-      let target = try cast(target, Target.self)
-      let context = try cast(context, Context.self)
-      try closure(built, target, context)
+      return Flare(built)
+        .map(strongify)
+        .map { try closure($0, cast(target, Target.self), cast(context, Context.self)) }
     }
   }
 
@@ -98,7 +97,7 @@ extension Transition.Builder.Source.Configurator where Container: UIViewControll
     ) -> Transition.Builder<Built>
   {
     return customConfigure(Context.self) { [weak router] built, target, context in
-      let router = try unwrap(router)
+      let router = try strongify(router)
       closure(router)(built, target, context)
     }
   }

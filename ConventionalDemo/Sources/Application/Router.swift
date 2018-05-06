@@ -13,14 +13,14 @@ import Conventional
 
 class Router {
 
-  let windowConfiguration: Configuration.Window?
+  let windowConfiguration: Configuration.Window
 
-  init(appDelegate: UIApplicationDelegate, launchOptions: [UIApplicationLaunchOptionsKey: Any]?) {
+  init(window: UIWindow, launchOptions: [UIApplicationLaunchOptionsKey: Any]?) {
 
-    windowConfiguration = try? appDelegate.window.unwrap().unwrap().conventional.configuration
+    windowConfiguration = window.conventional.configuration
       .register(WelcomeC.self).instantiateInitial().changeRoot().noContext()
       .build()
 
-    try? windowConfiguration?.transit(WelcomeC.self)
+    windowConfiguration.transit(WelcomeC.self)
   }
 }

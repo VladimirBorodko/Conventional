@@ -190,41 +190,32 @@ extension Reuseable.Builder where Built == UICollectionView {
     , line: UInt = #line
     ) -> Configuration.CollectionView
   {
-    return Flare(built, file: file, line : line)
+    return Flare(built)
       .perform { cv in try cells
         .registerUniqueReuseIds(cv.registerCell(brief:))
         .escalate()
-      }
-      .perform { cv in
+      }.perform { cv in
         try supplementaries
           .reduce(Flare<Void>(())) { (flare, pair) in
-            let (kind, array) = pair
+            let (kind, briefs) = pair
             return flare.flatMap { _ in
-              array.registerUniqueReuseIds { brief in
+              briefs.registerUniqueReuseIds(kind: kind) { brief in
                 try cv.registerView(kind: kind, brief: brief)
               }
             }
           }
           .escalate()
-      }
-      .map(Configuration.CollectionView.init)
+      }.map(Configuration.CollectionView.init)
       .perform { configuaration in
         try cells
-          .uniqueModelContexts(dequeueCollectionCell)
+          .uniqueCellContexts(dequeueCollectionCell)
           .map { configuaration.cells = $0 }
           .escalate()
-      }
-      .perform { configuaration in
+      }.perform { configuaration in
         try supplementaries
-          .reduce(Flare<Void>(())) { (flare, pair) in
-            let (kind, array) = pair
-            return flare.flatMap { _ in
-              array
-                .uniqueModelContexts(dequeueCollectionSupplementary)
-                .map { configuaration.supplementaries[kind] = $0 }
-            }
-          }
+          .uniqueSupplementaryContexts(dequeueCollectionSupplementary)
+          .map { configuaration.supplementaries = $0 }
           .escalate()
-      }.unwrap()
+      }.unwrap(file, line)
   }
 }

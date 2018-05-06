@@ -9,53 +9,41 @@ import Foundation
 
 public struct Converter<Output> {
 
-  private let converts: [String: Convert]
+  internal var converts: [Hashes.Context: Convert]
+  internal var restore: Restore?
 
   internal init
-    ( _ converts: [String: Convert] )
-  { self.converts = converts }
+    ( converts: [Hashes.Context: Convert] = [:]
+    , restore: Restore? = nil
+    )
+  {
+    self.converts = converts
+    self.restore = restore
+  }
 
-  public func canConvert<Input>
+  public func mayConvert<Input>
     ( _ input: Input
     ) -> Bool
-  {
-    guard let key = try? makeKey(input) else {return false}
-    return converts[key] != nil
-  }
+  { return nil != (try? converts.value(for: .init(context: input))) }
 
   public func convert<Input>
     ( _ input: Input
-    ) throws -> Output
+    , file: StaticString = #file
+    , line: UInt = #line
+    ) -> Output
   {
-    let key = try makeKey(input)
-    guard let map = converts[key] else {throw Errors.NotRegistered(key: key)}
-    return try map(input)
-  }
-
-  internal typealias Convert = (Any) throws -> Output
-
-  public class Builder {
-
-    private var converts: [String: Convert] = [:]
-
-    public init() { }
-
-    public func build
-      () -> Converter<Output>
-    { return .init(converts) }
-
-    public func append<Input>
-      ( _: Input.Type
-      , convert: @escaping (Input) throws -> Output
-      ) throws -> Builder
-    {
-      let key = String(reflecting: Input.self)
-      guard converts[key] == nil else { throw Errors.NotUnique(key: key) }
-      converts[key] = {
-        let input = try cast($0, Input.self)
-        return try convert(input)
+    let flare = Flare(input)
+      .map(Hashes.Context.init(context:))
+      .map(converts.value)
+      .flatMap { $0(input) }
+    return restore
+      .map { restore in flare
+        .restore(restore())
+        .unwrap(file, line)
       }
-      return self
-    }
+      ?? flare.unwrap(file, line)
   }
+
+  internal typealias Restore = () -> Output
+  internal typealias Convert = (Any) -> Flare<Output>
 }

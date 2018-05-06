@@ -9,13 +9,13 @@ import Foundation
 
 public protocol OpaqueWrapper {
 
-  func unwrapValue
+  func unwrapContext
     () throws -> Any
 }
 
 extension Optional: OpaqueWrapper {
 
-  public func unwrapValue
+  public func unwrapContext
     () throws -> Any
   {
     guard let wrapped = self else { throw Errors.UnwrapFailed(type: Wrapped.self) }

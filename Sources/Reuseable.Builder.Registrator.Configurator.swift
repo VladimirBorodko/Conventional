@@ -28,7 +28,7 @@ extension Reuseable.Builder.Registrator.Configurator {
     ) -> Reuseable.Builder<Built>
   {
     return customConfigure(Context.self) { [weak owner] view, context in
-      let owner = try unwrap(owner)
+      let owner = try strongify(owner)
       closure(owner)(view,context)
     }
   }

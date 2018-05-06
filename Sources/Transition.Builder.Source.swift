@@ -51,13 +51,13 @@ extension Transition.Builder.Source where Built: UIViewController {
     return .init(built: builder.built) { _, configure in
       var builder = self.builder
       let extract = self.extract
-      let brief = Transition.Brief.Seguer(destinationType: Container.self, segueId: segueId) { segue, sender in
-        let segue = try cast(segue, UIStoryboardSegue.self)
-        let container = try cast(segue.destination, Container.self)
-        let target = try extract(container)
-        try configure(target, sender)
+      let brief = Transition.Brief.segue(segueId, Container.self) { segue, sender in
+        return Flare(segue)
+          .map { try cast($0, UIStoryboardSegue.self) }
+          .map { try cast($0.destination, Container.self) }
+          .map { try configure(extract($0), sender).escalate() }
       }
-      builder.seguers.append(brief)
+      builder.briefs.append(brief)
       return builder
     }
   }
@@ -74,18 +74,25 @@ extension Transition.Builder.Source where Built: UIViewController {
     return .init(built: builder.built) { contextType, configure in
       var builder = self.builder
       let extract = self.extract
-      let brief = Transition.Brief.Transiter(contextType: contextType) { controller, context in
-        let controller = try cast(controller, Built.self)
-        let sender = Transition.Brief.Seguer.Sender { segue in
-          let container = try cast(segue.destination, Container.self)
-          let target = try extract(container)
-          try configure(target, context)
+      let brief = Transition.Brief.transit(contextType) { context in
+        let sender = Transition.Sender { segue in return Flare(segue)
+          .map { try cast($0.destination, Container.self) }
+          .map { try configure(extract($0), context).escalate() }
         }
-        try objc_throws {
-          controller.performSegue(withIdentifier: segueId, sender: sender)
-        }
+        return Flare(context)
+          .map { context in
+            return Transition { built in
+              return Flare(built)
+                .map { try cast($0, Built.self) }
+                .map { built in
+                  try objc_throws {
+                    built.performSegue(withIdentifier: segueId, sender: sender)
+                  }
+                }
+            }
+          }
       }
-      builder.transiters.append(brief)
+      builder.briefs.append(brief)
       return builder
     }
   }

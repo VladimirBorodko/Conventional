@@ -34,12 +34,18 @@ extension Transition.Builder where Built: ConventionComplying {
     ) -> Transition.Builder<Built>
   {
     var builder = self
-    let brief = Transition.Brief.Transiter(contextType: Context.self) { built, context in
-      let built = try cast(built, Built.self)
-      let context = try cast(context, Context.self)
-      try perform(built, context)
+    let brief = Transition.Brief.transit(Context.self) { context in
+      return Flare(context)
+        .map { try cast($0, Context.self) }
+        .map { context in
+          return Transition { built in
+            return Flare(built)
+              .map { try cast($0, Built.self) }
+              .map { try perform($0, context) }
+          }
+        }
     }
-    builder.transiters.append(brief)
+    builder.briefs.append(brief)
     return builder
   }
 }
@@ -47,14 +53,31 @@ extension Transition.Builder where Built: ConventionComplying {
 extension Transition.Builder where Built: UIViewController {
 
   public func build
-    () throws -> Configuration.ViewController
+    ( file: StaticString = #file
+    , line: UInt = #line
+    ) -> Configuration.ViewController
   {
-    do {
-      return try .init(self)
-    } catch let e {
-      assertionFailure("\(e)")
-      throw e
-    }
+    return Flare(built)
+      .map(Configuration.ViewController.init)
+      .perform { configuration in
+        try briefs
+          .uniqueSegues()
+          .map { configuration.segues = $0 }
+          .escalate()
+      }
+      .perform { configuration in
+        try briefs
+          .uniqueProviders()
+          .map { configuration.provider.converts = $0 }
+          .escalate()
+      }
+      .perform { configuration in
+        try briefs
+          .uniqueTransitions()
+          .map { configuration.converter.converts = $0 }
+          .escalate()
+      }
+      .unwrap(file, line)
   }
 
   public func showInitial<Target: UIViewController & ConventionalConfigurable>
@@ -107,13 +130,18 @@ extension Transition.Builder where Built: UIViewController {
 extension Transition.Builder where Built: UIWindow {
   
   public func build
-    () throws -> Configuration.Window
+    ( file: StaticString = #file
+    , line: UInt = #line
+    ) -> Configuration.Window
   {
-    do {
-      return try .init(self)
-    } catch let e {
-      assertionFailure("\(e)")
-      throw e
-    }
+    return Flare(built)
+      .map(Configuration.Window.init)
+      .perform { configuration in
+        try briefs
+          .uniqueTransitions()
+          .map { configuration.converter.converts = $0 }
+          .escalate()
+      }
+      .unwrap(file, line)
   }
 }

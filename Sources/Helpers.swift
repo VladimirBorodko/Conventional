@@ -18,16 +18,15 @@ public func objc_throws<T>
   }
 }
 
-internal func makeKey
+internal func unwrapType
   ( _ value: Any
-  ) throws -> String
+  ) throws -> Any.Type
 {
-  let valueType = (value as? OpaqueWrapper)
-    .flatMap { try? $0.unwrapValue() }
-    .map { $0 is AnyClass ? $0 : type(of:$0) }
-    ?? value as? AnyClass
+  return try (value as? OpaqueWrapper)
+    .map { try $0.unwrapContext() }
+    .map { $0 as? Any.Type ?? type(of:$0) }
+    ?? (value as? Any.Type)
     ?? type(of: value)
-  return String(reflecting: valueType)
 }
 
 internal func cast<T>
@@ -51,11 +50,19 @@ internal func cast<F, T>
   return casted
 }
 
-internal func unwrap<T: AnyObject>
+internal func strongify<T: AnyObject>
   ( _ value: T?
   ) throws -> T
 {
-  guard let value = value else { throw Errors.ObjectDellocated(type: T.self)}
+  guard let value = value else { throw Errors.ObjectDeallocated(type: T.self)}
+  return value
+}
+
+internal func unwrap<T>
+  ( _ value: T?
+  ) throws -> T
+{
+  guard let value = value else { throw Errors.UnwrapFailed(type: T.self)}
   return value
 }
 
@@ -64,7 +71,7 @@ internal func checkSameInstance<T: AnyObject>
   , _ provided: T
   ) throws
 {
-  guard let stored = stored else { throw Errors.ObjectDellocated(type: T.self) }
+  guard let stored = stored else { throw Errors.ObjectDeallocated(type: T.self) }
   guard stored === provided else { throw Errors.WrongInstance(type: T.self) }
 }
 
@@ -77,3 +84,11 @@ extension Optional {
     return wrapped
   }
 }
+
+extension Dictionary where Key: CustomDebugStringConvertible {
+  internal func value(for key: Key) throws -> Value {
+    guard let value = self[key] else { throw Errors.NotRegistered(key: key) }
+    return value
+  }
+}
+

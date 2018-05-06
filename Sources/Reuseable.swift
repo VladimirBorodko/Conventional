@@ -7,10 +7,7 @@
 
 import UIKit
 
-public struct Reuseable {
-
-  internal let reuseId: String
-  internal let configure: Configure
+public enum Reuseable {
 
   internal typealias Configure = ( _ view: AnyObject, _ context: Any) throws -> Void
 
@@ -44,7 +41,7 @@ public struct Reuseable {
     }
   }
 
-  struct Brief {
+  internal struct Brief {
 
     internal let viewType: AnyClass
     internal let source: Source

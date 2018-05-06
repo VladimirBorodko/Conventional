@@ -109,29 +109,49 @@ internal func dequeueCollectionSupplementary
 extension Array where Element == Reuseable.Brief {
 
   internal func registerUniqueReuseIds
-    ( _ register: (Reuseable.Brief) throws -> Void
+    ( kind: String? = nil
+    , _ register: (Reuseable.Brief) throws -> Void
     ) -> Flare<Void>
   {
     return self
       .reduce(Flare<[String:Void]>([:])) { flare, brief in
         flare.perform { dict in
           if case .provide = brief.source { return }
-          guard dict[brief.reuseId] == nil else { throw Errors.NotUnique(key: brief.reuseId) }
+          guard dict[brief.reuseId] == nil else { throw Errors.NotUniqueReuseId(id: brief.reuseId, kind: kind) }
           try register(brief)
           dict[brief.reuseId] = ()
         }
       }.map { _ in }
   }
 
-  internal func uniqueModelContexts<T>
+  internal func uniqueCellContexts<T>
     ( _ transform: (Reuseable.Brief) -> T
-    ) -> Flare<[String: T]>
+    ) -> Flare<[Hashes.Context: T]>
   {
-    return self.reduce(Flare<[String: T]>([:])) { flare, brief in
-      let key = String(reflecting: brief.contextType)
+    return self.reduce(Flare<[Hashes.Context: T]>([:])) { flare, brief in
+      let key = Hashes.Context(type: brief.contextType)
       return flare.perform { dict in
         guard dict[key] == nil else { throw Errors.NotUnique(key: key) }
         dict[key] = transform(brief)
+      }
+    }
+  }
+}
+
+extension Dictionary where Key == String, Value == [Reuseable.Brief] {
+
+  internal func uniqueSupplementaryContexts<T>
+    ( _ transform: (Reuseable.Brief) -> T
+    ) -> Flare<[Hashes.Supplementary: T]>
+  {
+    return self.reduce(Flare<[Hashes.Supplementary: T]>([:])) { flare, pair in
+      let (kind, briefs) = pair
+      return briefs.reduce(flare) { flare, brief in
+        let key = Hashes.Supplementary(kind: kind, type: brief.contextType)
+        return flare.perform { dict in
+          guard dict[key] == nil else { throw Errors.NotUnique(key: key) }
+          dict[key] = transform(brief)
+        }
       }
     }
   }

@@ -9,44 +9,31 @@ import UIKit
 
 extension Configuration.Window {
 
-  internal init<W: UIWindow>
-    ( _ builder: Transition.Builder<W>
-    ) throws
+  internal init
+    ( _ source: UIWindow
+    )
   {
-    source = builder.built
-    let transits = try builder.transiters.uniqueTransitions().mapValues { configure in
-      return { context in
-        Transition { controller in
-          try configure(controller, context)
-        }
-      }
-    }
-    converter = .init(transits)
+    self.source = source
+    self.converter = .init(restore: Transition.empty)
   }
 
   public func perform
     ( _ transition: Transition
-    ) throws
+    , file: StaticString = #file
+    , line: UInt = #line
+    )
   {
-    do {
-      let source = try unwrap(self.source)
-      try transition.perform(source)
-    } catch let e {
-      assertionFailure("\(e)")
-      throw e
-    }
+    return Flare(source)
+      .map(strongify)
+      .flatMap(transition.perform)
+      .restore(())
+      .unwrap(file, line)
   }
 
   public func transit
     ( _ context: Any
-    ) throws
-  {
-    do {
-      let source = try unwrap(self.source)
-      try converter.convert(context).perform(source)
-    } catch let e {
-      assertionFailure("\(e)")
-      throw e
-    }
-  }
+    , file: StaticString = #file
+    , line: UInt = #line
+    )
+  { perform(converter.convert(context, file: file, line: line), file: file, line: line) }
 }
