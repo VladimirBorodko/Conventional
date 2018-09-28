@@ -22,6 +22,7 @@ extension Configuration.TableView {
       .map(Hashes.Context.init(context:))
       .map(cells.value)
       .flatMap { $0(tv, ip, context) }
+      .restore(UITableViewCell())
       .unwrap(file, line)
   }
 
@@ -37,6 +38,7 @@ extension Configuration.TableView {
       .map(Hashes.Supplementary.header)
       .map(supplementaries.value)
       .flatMap { $0(tv, context) }
+      .restore(nil)
       .unwrap(file, line)
   }
 
@@ -52,6 +54,7 @@ extension Configuration.TableView {
       .map(Hashes.Supplementary.footer)
       .map(supplementaries.value)
       .flatMap { $0(tv, context) }
+      .restore(nil)
       .unwrap(file, line)
   }
 

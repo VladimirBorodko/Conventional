@@ -1,0 +1,11 @@
+use_frameworks!
+
+pod 'Conventional', :path => '../'
+pod 'RxSwift'
+pod 'RxCocoa'
+
+target 'DemoIos' do
+end
+
+target 'DemoTvos' do
+end

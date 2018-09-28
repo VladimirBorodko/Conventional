@@ -7,14 +7,11 @@
 
 import Foundation
 
-internal protocol FlareConvertible {
-  var any: Any? { get }
+private protocol FlareConvertible {
   var errors: [Error] { get }
 }
 
-extension Flare: FlareConvertible {
-  internal var any: Any? { return value }
-}
+extension Flare: FlareConvertible {}
 
 internal struct Flare<Value>: Error {
 
@@ -80,21 +77,12 @@ internal struct Flare<Value>: Error {
     ) -> Flare
   { return .init(value ?? provide(), self) }
 
-  internal func debug
-    ( _ tag: String = ""
-    ) -> Flare
-  {
-    print("\(tag.isEmpty ? "" : "\(tag): ")\(errors.count)")
-    return self
-  }
-
-
   internal func unwrap
     ( _ file: StaticString
     , _ line: UInt
     ) -> Value
   {
-    assert(errors.isEmpty, .init(reflecting: self), file: file, line: line)
+    assert(errors.isEmpty, { let s = String(reflecting: self); print(s); return s }(), file: file, line: line)
     guard let value = self.value else {
       preconditionFailure(.init(reflecting: self), file: file, line: line)
     }
@@ -108,8 +96,10 @@ internal struct Flare<Value>: Error {
 
 extension Flare: CustomDebugStringConvertible {
   internal var debugDescription: String {
-    return "There was \(errors.count) errors\n" + errors
+    if errors.isEmpty { return String(reflecting: value!) }
+    var descriptions = errors
       .map { ($0 as NSError).userInfo["Conventional.description"] as? String ?? String(reflecting: $0) }
-      .joined(separator: "\n")
+    if errors.count > 1 { descriptions = ["There was \(errors.count) errors"] + descriptions }
+    return descriptions.joined(separator: "\n")
   }
 }
